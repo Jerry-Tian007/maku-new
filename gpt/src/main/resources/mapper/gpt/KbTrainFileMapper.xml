@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbTrainFileMapper">
+    
+    <resultMap type="KbTrainFile" id="KbTrainFileResult">
+        <result property="fileId"    column="file_id"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileSuffix"    column="file_suffix"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="isIdentifyForm"    column="is_identify_form"    />
+        <result property="ownerId"    column="owner_id"    />
+        <result property="ownerName"    column="owner_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="businessName"    column="business_name"    />
+        <result property="trainStatus"    column="train_status"    />
+        <result property="trainFlow"    column="train_flow"    />
+        <result property="trainTime"    column="train_time"    />
+
+    </resultMap>
+
+    <sql id="selectKbTrainFileVo">
+        select file_id, file_url, file_suffix, file_name, is_identify_form,train_time, train_status,train_flow, owner_id, owner_name, create_time, create_by, update_time, update_by, remark, business_id, business_name from kb_train_file
+    </sql>
+
+    <select id="selectUnTrainKbTrainFileList" parameterType="KbTrainFile" resultMap="KbTrainFileResult">
+        <include refid="selectKbTrainFileVo"/>
+        <where>
+            <if test="fileUrl != null  and fileUrl != ''"> and file_url = #{fileUrl}</if>
+            <if test="fileSuffix != null  and fileSuffix != ''"> and file_suffix = #{fileSuffix}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="isIdentifyForm != null  and isIdentifyForm != ''"> and is_identify_form = #{isIdentifyForm}</if>
+            <if test="ownerId != null "> and owner_id = #{ownerId}</if>
+            <if test="ownerName != null  and ownerName != ''"> and owner_name like concat('%', #{ownerName}, '%')</if>
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+            <if test="businessName != null  and businessName != ''"> and business_name = #{businessName}</if>
+            and train_status !='success'
+        </where>
+    </select>
+    <select id="selectKbTrainFileList" parameterType="KbTrainFile" resultMap="KbTrainFileResult">
+        <include refid="selectKbTrainFileVo"/>
+        <where>  
+            <if test="fileUrl != null  and fileUrl != ''"> and file_url = #{fileUrl}</if>
+            <if test="fileSuffix != null  and fileSuffix != ''"> and file_suffix = #{fileSuffix}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="isIdentifyForm != null  and isIdentifyForm != ''"> and is_identify_form = #{isIdentifyForm}</if>
+            <if test="ownerId != null "> and owner_id = #{ownerId}</if>
+            <if test="ownerName != null  and ownerName != ''"> and owner_name like concat('%', #{ownerName}, '%')</if>
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+            <if test="businessName != null  and businessName != ''"> and business_name = #{businessName}</if>
+            <if test="trainStatus != null  and trainStatus != ''"> and train_status = #{trainStatus}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectKbTrainFileByFileId" parameterType="String" resultMap="KbTrainFileResult">
+        <include refid="selectKbTrainFileVo"/>
+        where file_id = #{fileId}
+    </select>
+        
+    <insert id="insertKbTrainFile" parameterType="KbTrainFile">
+        insert into kb_train_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileId != null">file_id,</if>
+            <if test="fileUrl != null">file_url,</if>
+            <if test="fileSuffix != null">file_suffix,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="isIdentifyForm != null">is_identify_form,</if>
+            <if test="ownerId != null">owner_id,</if>
+            <if test="ownerName != null">owner_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="businessName != null">business_name,</if>
+            <if test="trainTime != null">train_time,</if>
+            <if test="trainStatus != null">train_status,</if>
+            <if test="trainFlow != null">train_flow,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileId != null">#{fileId},</if>
+            <if test="fileUrl != null">#{fileUrl},</if>
+            <if test="fileSuffix != null">#{fileSuffix},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="isIdentifyForm != null">#{isIdentifyForm},</if>
+            <if test="ownerId != null">#{ownerId},</if>
+            <if test="ownerName != null">#{ownerName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="businessName != null">#{businessName},</if>
+            <if test="trainTime != null">#{trainTime},</if>
+            <if test="trainStatus != null">#{trainStatus},</if>
+            <if test="trainFlow != null">#{trainFlow},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKbTrainFile" parameterType="KbTrainFile">
+        update kb_train_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileUrl != null">file_url = #{fileUrl},</if>
+            <if test="fileSuffix != null">file_suffix = #{fileSuffix},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="isIdentifyForm != null">is_identify_form = #{isIdentifyForm},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="ownerName != null">owner_name = #{ownerName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="businessName != null">business_name = #{businessName},</if>
+            <if test="trainTime != null">train_time = #{trainTime},</if>
+            <if test="trainStatus != null">train_status = #{trainStatus},</if>
+            <if test="trainFlow != null">train_flow = #{trainFlow},</if>
+        </trim>
+        where file_id = #{fileId}
+    </update>
+
+    <delete id="deleteKbTrainFileByFileId" parameterType="String">
+        delete from kb_train_file where file_id = #{fileId}
+    </delete>
+
+    <delete id="deleteKbTrainFileByFileIds" parameterType="String">
+        delete from kb_train_file where file_id in 
+        <foreach item="fileId" collection="array" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </delete>
+</mapper>

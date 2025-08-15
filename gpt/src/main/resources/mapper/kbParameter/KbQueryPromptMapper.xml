@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbQueryPromptMapper">
+    <resultMap type="com.ruoyi.gpt.model.vo.personal_prompt.QueryPromptPageVO" id="queryPromptPageVOResult">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="prompt" column="prompt"/>
+        <result property="userId" column="user_id"/>
+        <result property="releaseStatus" column="release_status"/>
+        <result property="kbManagerId" column="kb_manager_id"/>
+        <result property="kbName" column="kb_name"/>
+        <result property="queryPromptType" column="query_prompt_type"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="queryPromptList"
+            parameterType="com.ruoyi.gpt.model.dto.personal_prompt.PersonalPromptPageQryDto"
+            resultMap="queryPromptPageVOResult">
+        select kpp.id,
+        kpp.name,
+        kpp.prompt,
+        kpp.user_id,
+        kpp.release_status,
+        kpp.kb_manager_id,
+        km.kb_name,
+        kpp.query_prompt_type,
+        kpp.create_by,
+        kpp.create_time
+        from kb_personal_prompt kpp
+        left join kb_manager km on kpp.kb_manager_id = km.id
+        <where>
+            kpp.user_id = #{userId}
+            and kpp.query_prompt_type is not null
+            <if test="queryPromptType != null and queryPromptType != ''">
+                and kpp.query_prompt_type = #{queryPromptType}
+            </if>
+            <if test="name != null and name != ''">
+                and kpp.`name` like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

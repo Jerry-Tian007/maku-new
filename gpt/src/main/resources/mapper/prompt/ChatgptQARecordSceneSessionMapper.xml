@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ChatgptQARecordSceneSessionMapper">
+
+    <resultMap type="ChatgptQARecordSceneSession" id="ChatgptQARecordSceneSessionResult">
+        <result property="id" column="id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="sessionTitle" column="session_title"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="manageId" column="manage_id"/>
+    </resultMap>
+
+    <sql id="selectChatgptQARecordSceneSessionVo">
+        select id,
+               session_id,
+               session_title,
+               user_id,
+               dept_id,
+               create_by,
+               create_time,
+               update_time,
+               update_by,
+               remark,
+               del_flag,
+               manage_id
+        from chatgpt_q_a_record_scene_session
+    </sql>
+
+    <select id="selectChatgptQARecordSceneSessionList" parameterType="ChatgptQARecordSceneSession"
+            resultMap="ChatgptQARecordSceneSessionResult">
+        select ss.id, ss.session_id, ss.session_title, ss.user_id, ss.dept_id, ss.create_by, ss.create_time,
+        ss.update_time, ss.update_by, ss.remark,ss.del_flag,ss.manage_id
+        from chatgpt_q_a_record_scene_session ss
+        <where>
+            ss.del_flag = '0'
+            <if test="sessionId != null  and sessionId != ''">and ss.session_id = #{sessionId}</if>
+            <if test="sessionTitle != null  and sessionTitle != ''">and ss.session_title = #{sessionTitle}</if>
+            <if test="manageId != null and manageId != ''">and ss.manage_id = #{manageId}</if>
+            <if test="userId != null and userId != ''">and ss.user_id = #{userId}</if>
+            <if test="deptId != null and deptId != ''">and ss.dept_id = #{deptId}</if>
+        </where>
+        order by ss.create_time desc
+    </select>
+
+    <select id="selectChatgptQARecordSceneSessionById" parameterType="Long"
+            resultMap="ChatgptQARecordSceneSessionResult">
+        <include refid="selectChatgptQARecordSceneSessionVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectChatgptQARecordSceneSessionBySessionId"
+            resultType="com.ruoyi.gpt.model.domain.ChatgptQARecordSceneSession">
+        <include refid="selectChatgptQARecordSceneSessionVo"/>
+        where session_id = #{sessionId}
+    </select>
+
+    <insert id="insertChatgptQARecordSceneSession" parameterType="ChatgptQARecordSceneSession">
+        insert into chatgpt_q_a_record_scene_session
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="sessionId != null">session_id,</if>
+            <if test="sessionTitle != null">session_title,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="manageId != null">manage_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="sessionTitle != null">#{sessionTitle},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="manageId != null">#{manageId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateChatgptQARecordSceneSession" parameterType="ChatgptQARecordSceneSession">
+        update chatgpt_q_a_record_scene_session
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="sessionTitle != null">session_title = #{sessionTitle},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="manageId != null">manage_id = #{manageId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatgptQARecordSceneSessionById" parameterType="Long">
+        delete
+        from chatgpt_q_a_record_scene_session
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteChatgptQARecordSceneSessionByIds" parameterType="String">
+        update chatgpt_q_a_record_scene_session set del_flag = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

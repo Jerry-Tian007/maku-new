@@ -1,0 +1,648 @@
+<template>
+  <div class="back">
+    <div
+      class="color-background"
+      style="position: absolute;width:100%;height:100%;"
+    ></div>
+    <!--    <el-card class="form-background">
+
+        </el-card>-->
+    <van-dropdown-menu class="form-background" active-color="#1989fa">
+      <van-dropdown-item :title="'总计: '+ this.total + '条'" ref="item" disabled/>
+      <van-dropdown-item title="条件筛选" ref="queryDropMenu">
+        <van-cell center title="提问">
+          <template #right-icon>
+            <el-input
+              v-model="queryParams.question"
+              style="width: 75%;"
+              size="small"
+              placeholder="请输入提问（关键词）"
+            />
+          </template>
+        </van-cell>
+        <van-cell center title="回答">
+          <template #right-icon>
+            <el-input
+              v-model="queryParams.answer"
+              style="width: 75%;"
+              size="small"
+              placeholder="请输入回答（关键词）"
+            />
+          </template>
+        </van-cell>
+        <van-cell center title="部门">
+          <template #right-icon>
+            <el-select
+              v-model="queryParams.deptId"
+              style="width: 75%;"
+              placeholder="请选择部门"
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="item in deptOptions"
+                :key="item.deptId"
+                :label="item.deptName"
+                :value="item.deptId"
+              ></el-option>
+            </el-select>
+          </template>
+        </van-cell>
+        <van-cell center title="开始时间">
+          <template #right-icon>
+            <div @click="startTimeVal = true" style="width: 75%;">
+              <el-input
+                v-model="queryParams.startTime"
+                placeholder="请选择开始时间"
+                style="width: 100%;"
+                readonly
+              />
+            </div>
+          </template>
+        </van-cell>
+        <van-cell center title="结束时间">
+          <template #right-icon>
+            <div @click="endTimeVal = true" style="width: 75%;">
+              <el-input
+                v-model="queryParams.endTime"
+                placeholder="请选择结束时间"
+                style="width: 100%;"
+                readonly
+              />
+            </div>
+          </template>
+        </van-cell>
+        <div style="padding: 5px 16px;">
+          <div style="margin-top: 10px">
+            <el-button
+              type="primary"
+              @click="handleQuery"
+              style="width: 100%"
+            >查询
+            </el-button>
+          </div>
+          <div style="margin: 10px 0px 12px 0px;">
+            <el-button
+              @click="handleReset"
+              style="width: 100%"
+            >重置
+            </el-button>
+          </div>
+        </div>
+      </van-dropdown-item>
+      <van-popup v-model="startTimeVal" round position="bottom">
+        <van-datetime-picker
+          v-model="startTime"
+          type="datetime"
+          @confirm="handleSelectStartTime"
+          title="请选择开始时间"
+        />
+      </van-popup>
+      <van-popup v-model="endTimeVal" round position="bottom">
+        <van-datetime-picker
+          v-model="endTime"
+          type="datetime"
+          @confirm="handleSelectEndTime"
+          title="请选择结束时间"
+          :min-date="startTime"
+        />
+      </van-popup>
+    </van-dropdown-menu>
+    <div
+      ref="cardList"
+      style="position: absolute;width:100%;height:100%;padding-top:75px;overflow-y: auto;"
+      v-infinite-scroll="loadPage">
+      <el-card class="info-card" v-for="(item, index) in tableData">
+        <template slot="header">
+          <span style="font-size: 18px;">记录</span>
+        </template>
+        <div class="card-content">
+          <div class="card-content-item">
+            <div class="card-content-item-key">提问</div>
+            <div class="card-content-item-value">
+              {{ item.question }}
+            </div>
+          </div>
+          <div class="card-content-item">
+            <div class="card-content-item-key">回答</div>
+            <div class="card-content-item-value">
+              {{ item.answer }}
+            </div>
+          </div>
+          <div class="card-content-item">
+            <div class="card-content-item-key">提问人</div>
+            <div class="card-content-item-value">
+              {{ item.createBy }}
+            </div>
+          </div>
+          <div class="card-content-item">
+            <div class="card-content-item-key">模型</div>
+            <div class="card-content-item-value">
+              <el-tag type="primary">
+                {{ item.model }}
+              </el-tag>
+            </div>
+          </div>
+          <div class="card-content-item">
+            <div class="card-content-item-key">Token数</div>
+            <div class="card-content-item-value" :style="item.tokenUsage < 1 ? 'color: #F56C6C;' : ''">
+              {{ item.tokenUsage }}
+            </div>
+          </div>
+          <div class="card-content-item">
+            <div class="card-content-item-key">准确性</div>
+            <div class="card-content-item-value">
+              <el-tag
+                v-if="item.isAccuracy === 'yes'"
+                type="success"
+              >准确
+              </el-tag>
+              <el-tag
+                v-else-if="item.isAccuracy === 'no'"
+                type="danger"
+              >不准确
+              </el-tag>
+              <div v-else>-</div>
+            </div>
+          </div>
+          <div class="card-content-item">
+            <div class="card-content-item-key">时间</div>
+            <div class="card-content-item-value">
+              {{ item.createTime }}
+            </div>
+          </div>
+        </div>
+        <div align="right">
+          <el-button type="primary" @click="handleView(item)" size="mini">查看</el-button>
+        </div>
+      </el-card>
+      <el-card class="info-card" align="center" v-if="isLoading">
+        <i class="el-icon-loading" style="font-size: 32px;"/>
+      </el-card>
+    </div>
+    <el-button style="position: absolute;left: 12px;bottom: 12px;" icon="el-icon-top" circle type="info" @click="backToTop"></el-button>
+    <el-dialog
+      title="对话详情"
+      :visible.sync="dialogVisible"
+      width="90%"
+      class="detail"
+      style="background-color: rgba(255,255,255,0.36)"
+    >
+      <div
+        style="margin: 0 10px 20px 10px;"
+        id="chatBox"
+        ref="historyContent"
+      >
+        <!--对话列表-->
+        <div
+          v-for="(item,index) in singleList"
+          :key="index"
+          style="padding:12px;"
+          :align="item.role=='user' ? 'right' : 'left'"
+        >
+          <el-card
+            class="card"
+            align="left"
+            :style="item.role=='user' ? 'background-color: #ffddc2;' : ''"
+          >
+            <div
+              v-if="item.role=='gpt'"
+              slot="header"
+              class="card-header"
+            >
+              <div>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 75 75"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_54_2)">
+                    <path
+                      d="M35.8922 29.2828C36.4078 27.7359 38.5922 27.7359 39.1078 29.2828L42.1313 38.3625C42.7968 40.3584 43.918 42.1719 45.4062 43.6593C46.8943 45.1466 48.7084 46.2668 50.7047 46.9313L59.7797 49.9547C61.3266 50.4703 61.3266 52.6547 59.7797 53.1703L50.7 56.1938C48.7041 56.8592 46.8906 57.9805 45.4033 59.4686C43.9159 60.9568 42.7957 62.7709 42.1313 64.7672L39.1078 73.8422C38.9967 74.1809 38.7814 74.4759 38.4926 74.685C38.2039 74.8941 37.8565 75.0067 37.5 75.0067C37.1435 75.0067 36.7961 74.8941 36.5074 74.685C36.2187 74.4759 36.0034 74.1809 35.8922 73.8422L32.8688 64.7625C32.2038 62.7671 31.0832 60.9539 29.5959 59.4666C28.1086 57.9793 26.2955 56.8588 24.3 56.1938L15.2203 53.1703C14.8816 53.0591 14.5867 52.8438 14.3775 52.5551C14.1684 52.2664 14.0558 51.919 14.0558 51.5625C14.0558 51.206 14.1684 50.8586 14.3775 50.5699C14.5867 50.2812 14.8816 50.0659 15.2203 49.9547L24.3 46.9313C26.2955 46.2662 28.1086 45.1457 29.5959 43.6584C31.0832 42.1711 32.2038 40.3579 32.8688 38.3625L35.8922 29.2828ZM17.7844 5.38125C17.8516 5.17826 17.9811 5.00161 18.1544 4.8764C18.3278 4.7512 18.5362 4.68381 18.75 4.68381C18.9639 4.68381 19.1723 4.7512 19.3456 4.8764C19.519 5.00161 19.6484 5.17826 19.7157 5.38125L21.5297 10.8281C22.3407 13.2563 24.2438 15.1594 26.6719 15.9703L32.1188 17.7844C32.3218 17.8516 32.4984 17.9811 32.6236 18.1544C32.7488 18.3278 32.8162 18.5362 32.8162 18.75C32.8162 18.9638 32.7488 19.1722 32.6236 19.3456C32.4984 19.5189 32.3218 19.6484 32.1188 19.7156L26.6719 21.5297C25.4744 21.9287 24.3862 22.6011 23.4937 23.4936C22.6011 24.3862 21.9287 25.4743 21.5297 26.6719L19.7157 32.1188C19.6484 32.3217 19.519 32.4984 19.3456 32.6236C19.1723 32.7488 18.9639 32.8162 18.75 32.8162C18.5362 32.8162 18.3278 32.7488 18.1544 32.6236C17.9811 32.4984 17.8516 32.3217 17.7844 32.1188L15.9703 26.6719C15.5714 25.4743 14.8989 24.3862 14.0064 23.4936C13.1138 22.6011 12.0257 21.9287 10.8282 21.5297L5.38128 19.7156C5.17828 19.6484 5.00163 19.5189 4.87643 19.3456C4.75123 19.1722 4.68384 18.9638 4.68384 18.75C4.68384 18.5362 4.75123 18.3278 4.87643 18.1544C5.00163 17.9811 5.17828 17.8516 5.38128 17.7844L10.8282 15.9703C12.0257 15.5713 13.1138 14.8989 14.0064 14.0064C14.8989 13.1138 15.5714 12.0257 15.9703 10.8281L17.7844 5.38125ZM50.9203 0.464063C50.9666 0.330592 51.0533 0.214856 51.1684 0.132945C51.2835 0.0510342 51.4213 0.00701904 51.5625 0.00701904C51.7038 0.00701904 51.8415 0.0510342 51.9566 0.132945C52.0717 0.214856 52.1584 0.330592 52.2047 0.464063L53.4141 4.09219C53.9532 5.71406 55.2235 6.98438 56.8453 7.52344L60.4735 8.73281C60.6069 8.77909 60.7227 8.8658 60.8046 8.98089C60.8865 9.09598 60.9305 9.23374 60.9305 9.375C60.9305 9.51626 60.8865 9.65402 60.8046 9.76911C60.7227 9.8842 60.6069 9.97091 60.4735 10.0172L56.8453 11.2266C56.0461 11.4925 55.3198 11.941 54.7242 12.5366C54.1285 13.1323 53.68 13.8585 53.4141 14.6578L52.2047 18.2859C52.1584 18.4194 52.0717 18.5351 51.9566 18.6171C51.8415 18.699 51.7038 18.743 51.5625 18.743C51.4213 18.743 51.2835 18.699 51.1684 18.6171C51.0533 18.5351 50.9666 18.4194 50.9203 18.2859L49.711 14.6578C49.4451 13.8585 48.9965 13.1323 48.4009 12.5366C47.8053 11.941 47.079 11.4925 46.2797 11.2266L42.6563 10.0172C42.5228 9.97091 42.4071 9.8842 42.3252 9.76911C42.2432 9.65402 42.1992 9.51626 42.1992 9.375C42.1992 9.23374 42.2432 9.09598 42.3252 8.98089C42.4071 8.8658 42.5228 8.77909 42.6563 8.73281L46.2844 7.52344C47.9063 6.98438 49.1766 5.71406 49.7157 4.09219L50.9203 0.46875V0.464063Z"
+                      fill="#2D9CDB"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_54_2">
+                      <rect
+                        width="75"
+                        height="75"
+                        fill="white"
+                      />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+
+            <!--文本内容-->
+            <div
+              class="card-text"
+              :style="'min-width:'+(item.role=='gpt'?'120px;' : '20px;')"
+            >
+              <!-- content-->
+              <mavon-editor
+                style="
+              border: none;
+              box-shadow: none;
+              min-height: 0px;
+              background: #ffffff00;
+              background-color: #ffffff00;
+              flex: 10;
+              font-size: 16px;
+              font-weight: 500;
+              line-height: 24px;
+              padding: 0px;
+                      min-width: 20px;
+            "
+                align="start"
+                previewBackground="#ffffff00"
+                v-model="item.text"
+                :subfield="false"
+                defaultOpen="preview"
+                :toolbarsFlag="false"
+                v-if="item.timestamp!=null && item.role=='gpt'"
+              />
+              <div
+                v-else
+                style="white-space: pre-line"
+              >
+                {{ item.isError ? item.errorText : item.text || waitingText }}
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import Config from "../system/config";
+import {listHistory} from "@/api/chatGPT/history";
+import {listDept} from "@/api/system/dept";
+import user from '../../store/modules/user'
+
+export default {
+  name: 'HistoryList',
+  components: {Config},
+  data() {
+    return {
+      dialogVisible: false,
+      isAdmin: false,
+      deptOptions: [],
+      singleList: [],
+      tableData: [],
+      total: 0,
+
+      page: 0,
+      isLoading: true,
+
+      queryParams: {
+        pageSize: 10,
+        pageNum: 1,
+        deptId: null,
+        createBy: null,
+        startTime: null,
+        endTime: null,
+        question: null,
+        answer: null,
+      },
+      createTime: null,
+      isMobile: false,
+      activeForm: '',
+
+      startTime: new Date(),
+      startTimeVal: false,
+      endTime: new Date(),
+      endTimeVal: false,
+    };
+  },
+  mounted() {
+    this.getDeptOption();
+    this.getData();
+    if (document.body.getBoundingClientRect().width - 1 < 992) {
+      this.isMobile = true;
+    }
+  },
+  methods: {
+    // 获取部门下拉选项
+    getDeptOption() {
+      if (user.state.admin) {
+        this.isAdmin = true;
+        listDept().then(res => {
+          this.deptOptions = res.data;
+        })
+      }
+    },
+    backToTop(){
+      const cardList = this.$refs.cardList;
+      const scrollTop = cardList.scrollTop;
+      if (scrollTop > 1) {
+        window.requestAnimationFrame(this.backToTop);
+        cardList.scrollTop = scrollTop - scrollTop / 8;
+      }
+    },
+    loadPage() {
+      if (this.tableData.length === this.total) {
+        this.isLoading = false;
+        return;
+      } else {
+        this.isLoading = true;
+      }
+      this.queryParams.pageNum += 1;
+      listHistory(this.queryParams).then(response => {
+        if (response.code === 200) {
+          this.tableData = [...this.tableData, ...response.rows];
+          this.total = response.total;
+          // this.isLoading = false;
+        } else {
+          this.$message.error(response.msg);
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    getData() {
+      listHistory(this.queryParams).then(response => {
+        if (response.code === 200) {
+          this.tableData = response.rows;
+          this.total = response.total;
+        } else {
+          this.$message.error(response.msg);
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    handleSelectStartTime(val) {
+      this.queryParams.startTime = val.toLocaleString().replaceAll('/', '-');
+      this.startTimeVal = false;
+    },
+    handleSelectEndTime(val) {
+      this.queryParams.endTime = val.toLocaleString().replaceAll('/', '-');
+      this.endTimeVal = false;
+    },
+    handleSizeChange(val) {
+      this.queryParams.pageSize = val;
+      this.getData();
+    },
+    handleCurrentChange(val) {
+      this.queryParams.pageNum = val;
+      this.getData();
+    },
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.$refs.queryDropMenu.toggle();
+      this.backToTop();
+      this.getData();
+    },
+    handleReset() {
+      this.queryParams = {
+        pageSize: 10,
+        pageNum: 1,
+        deptId: null,
+        createBy: null,
+        startTime: null,
+        endTime: null,
+        question: null,
+        answer: null,
+      };
+      this.createTime = null;
+      this.backToTop();
+      this.getData();
+    },
+    handleView(row) {
+      this.singleList = [];
+      this.singleList.push({
+        role: 'user',
+        text: row.question,
+        timestamp: new Date(row.createTime),
+      });
+      this.singleList.push({
+        role: 'gpt',
+        text: row.answer,
+        timestamp: new Date(row.createTime),
+      });
+      this.dialogVisible = true;
+    },
+  },
+  //销毁定时器
+  beforeDestroy() {
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff40;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0b7191;
+}
+
+.form-background {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #ffffffc0;
+  box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
+  border-radius: 0px 0px 12px 12px;
+  margin-bottom: 20px;
+  position: absolute;
+  z-index: 800;
+}
+
+.info-card {
+  margin: 0 16px 20px 16px;
+  background-color: #ffffff40;
+  border-radius: 10px;
+  border: 1px solid #ffffff;
+  box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
+  position: relative;
+}
+
+.card-content {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+  "Microsoft YaHei", 微软雅黑, Arial, sans-serif;
+
+}
+
+.card-content-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-content-item-key {
+  width: 80px;
+  color: #999093;
+}
+
+.card-content-item-value {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  color: #606266;
+}
+
+.card {
+  width: max-content;
+  max-width: 90%;
+  min-width: 60px;
+  min-height: 40px;
+  box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
+  border-radius: 10px;
+  background-color: #ffffffc0;
+  border: 1px solid #202020;
+}
+
+.card-text {
+  width: 100%;
+  font-size: 16px;
+  padding-top: 6px;
+}
+
+.box-card {
+  overflow: auto; //10.20日添加，但是无效
+}
+
+#el-container {
+  margin-top: 10px;
+
+  ::v-deep .el-tabs__item.is-disabled {
+    color: #000 !important;
+  }
+}
+
+::v-deep .el-textarea__inner {
+  border: 0px;
+  border-radius: 10px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+  "Microsoft YaHei", 微软雅黑, Arial, sans-serif;
+  font-size: 16px;
+}
+
+::v-deep .v-note-wrapper .v-note-panel .v-note-show .v-show-content,
+.v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
+  padding: 0px;
+  width: 100%;
+  min-width: 20px;
+}
+
+::v-deep .markdown-body p {
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+/* 定义滚动条高宽及背景
+ 高宽分别对应横竖滚动条的尺寸 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* 定义滚动条轨道
+内阴影+圆角 */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* 定义滑块
+内阴影+圆角 */
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: rgba(221, 221, 221, 0.5);
+}
+
+.content-card ::v-deep .el-table,
+.content-card ::v-deep .el-table__expanded-cell {
+  background-color: #ffffff20;
+}
+
+/* 表格内背景颜色 */
+.content-card ::v-deep .el-table th,
+.content-card ::v-deep .el-table tr,
+.content-card ::v-deep .el-table td {
+  background-color: #ffffff20 !important;
+}
+
+::v-deep .el-table__body-wrapper::-webkit-scrollbar {
+}
+
+// 滚动条的滑块
+::v-deep .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background-color: #d0d0d040;
+  border-radius: 3px;
+}
+
+::v-deep .detail .el-dialog {
+  background-color: #ffffffc0;
+  border-radius: 20px;
+  padding: 0px;
+}
+
+::v-deep .detail .el-dialog__body {
+  padding: 30px 0px;
+}
+</style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Quicksand&display=swap");
+
+:root {
+  font-size: 15px;
+}
+
+.color-background {
+  font-family: "Quicksand", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background-color: #ffffff;
+  background-image: radial-gradient(
+    closest-side,
+    rgb(58, 174, 211),
+    rgba(243, 11, 164, 0)
+  ),
+  radial-gradient(closest-side, #b0e0edff, #b0e0ed00),
+  radial-gradient(closest-side, #ccdcad, #ccdcad00);
+  background-size: 80vmax 80vmax, 70vmax 70vmax, 80vmax 80vmax;
+  background-position: -20vmax -20vmax, 40vmax -10vmax, 0vmax 0vmax;
+  background-repeat: no-repeat;
+  animation: 10s movement linear infinite;
+}
+
+@keyframes movement {
+  0%,
+  100% {
+    background-position: -50vmax -50vmax, 60vmax -30vmax, 10vmax 10vmax;
+  }
+  25% {
+    background-position: -40vmax -40vmax, 50vmax -40vmax, 0vmax -20vmax;
+  }
+  50% {
+    background-position: -40vmax -60vmax, 40vmax -30vmax, 10vmax 0vmax;
+  }
+  75% {
+    background-position: -40vmax -30vmax, 50vmax -30vmax, 20vmax 0vmax;
+  }
+}
+</style>

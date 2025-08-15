@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbFileMapper">
+    <resultMap type="com.ruoyi.gpt.model.domain.KbFile" id="KbFileResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="originalFileFullName" column="original_file_full_name"/>
+        <result property="originalFileName" column="original_file_name"/>
+        <result property="suffix" column="suffix"/>
+        <result property="downloadUrl" column="download_url"/>
+        <result property="serverFileName" column="server_file_name"/>
+        <result property="serverFileNameUrl" column="server_file_name_url"/>
+        <result property="trainStatus" column="train_status"/>
+        <result property="trainTime" column="train_time"/>
+        <result property="trainErrorReason" column="train_error_reason"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="filePage" column="file_page"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+        <result property="trainFinishTime" column="train_finish_time"/>
+        <result property="trainDuration" column="train_duration"/>
+        <result property="fileToken" column="file_token"/>
+        <result property="downloadUrlMd" column="download_url_md"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.kb_file.KbFilePageVo" id="KbFilePageResult">
+        <result property="id" column="id"/>
+        <result property="originalFileName" column="original_file_name"/>
+        <result property="suffix" column="suffix"/>
+        <result property="trainStatus" column="train_status"/>
+        <result property="trainTime" column="train_time"/>
+        <result property="trainErrorReason" column="train_error_reason"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="trainFinishTime" column="train_finish_time"/>
+        <result property="trainDuration" column="train_duration"/>
+        <result property="fileToken" column="file_token"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="filePage" column="file_page"/>
+        <result property="status" column="status"/>
+        <result property="jsonCosUrl" column="json_cos_url"/>
+    </resultMap>
+
+    <select id="selectKbFileList" parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFilePageDto"
+            resultMap="KbFilePageResult">
+        select kf.id,
+        kf.original_file_name,
+        kf.train_status,
+        kf.create_by,
+        kf.suffix,
+        kf.create_time,
+        kf.train_time,
+        kf.train_error_reason,
+        kf.train_finish_time,
+        kf.train_duration,
+        kf.file_token,
+        kf.file_size,
+        kf.file_page,
+        kf.json_cos_url,
+        kf.status,
+        kf.book_level as bookLevel
+        from kb_file kf
+        join kb_file_manager_rel on kf.id = kb_file_manager_rel.file_id
+        join kb_manager km on kb_file_manager_rel.kb_id = km.id
+        left join kb_authorization ka on km.id = ka.kb_id
+        <where>
+            and km.kb_status = 1
+            and (
+            <if test="userName == null or userName == ''">
+                1 = 1
+            </if>
+            <if test="userName != null and userName != ''">
+                km.create_by = #{userName}
+            </if>
+            <if test="roleIds != null and roleIds.length != 0">
+                or ka.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            )
+            <if test="pageDto.kbName != null and pageDto.kbName != ''">
+                and km.kb_name = #{pageDto.kbName}
+            </if>
+            <if test="pageDto.trainStatus != null and pageDto.trainStatus != ''">
+                and kf.train_status = #{pageDto.trainStatus}
+            </if>
+            <if test="pageDto.status != null and pageDto.status != ''">
+                and kf.status = #{pageDto.status}
+            </if>
+            <if test="pageDto.fileName != null and pageDto.fileName != ''">
+                and kf.original_file_name like CONCAT('%', #{pageDto.fileName}, '%')
+            </if>
+            <if test="pageDto.suffix != null and pageDto.suffix != ''">
+                and kf.suffix = #{pageDto.suffix}
+            </if>
+            <if test="pageDto.startTime != null">
+                and kf.create_time <![CDATA[ >= ]]> #{pageDto.startTime}
+            </if>
+            <if test="pageDto.endTime != null">
+                and kf.create_time <![CDATA[ <= ]]> #{pageDto.endTime}
+            </if>
+            <if test="pageDto.trainStartTime != null">
+                and kf.train_time <![CDATA[ >= ]]> #{pageDto.trainStartTime}
+            </if>
+            <if test="pageDto.trainEndTime != null">
+                and kf.train_time <![CDATA[ <= ]]> #{pageDto.trainEndTime}
+            </if>
+            <if test="pageDto.bookLevel != null">
+                and kf.book_level = #{pageDto.bookLevel}
+            </if>
+        </where>
+        group by kf.id
+        order by kf.create_time desc
+    </select>
+
+    <select id="selectKbFileById" parameterType="Long" resultMap="KbFileResult">
+        select id,
+               original_file_name,
+               download_url,
+               train_status,
+               create_by,
+               suffix,
+               create_time,
+               train_time,
+               server_file_name_url,
+               train_finish_time,
+               train_duration,
+               file_token,
+               download_url_md
+        from kb_file
+        where id = #{id}
+    </select>
+
+    <insert id="insertKbFile" parameterType="com.ruoyi.gpt.model.domain.KbFile">
+        insert into kb_file (id,
+                             user_id,
+                             dept_id,
+                             original_file_full_name,
+                             original_file_name,
+                             suffix,
+                             download_url,
+                             server_file_name,
+                             server_file_name_url,
+                             train_status,
+                             file_size,
+                             file_page,
+                             create_time,
+                             create_by,
+                             remark,
+                             train_finish_time,
+                             train_duration,
+                             file_token,
+                             status)
+        VALUES (#{kbFile.id},
+                #{kbFile.userId},
+                #{kbFile.deptId},
+                #{kbFile.originalFileFullName},
+                #{kbFile.originalFileName},
+                #{kbFile.suffix},
+                #{kbFile.downloadUrl},
+                #{kbFile.serverFileName},
+                #{kbFile.serverFileNameUrl},
+                #{kbFile.trainStatus},
+                #{kbFile.fileSize},
+                #{kbFile.filePage},
+                #{kbFile.createTime},
+                #{kbFile.createBy},
+                #{kbFile.remark},
+                #{kbFile.trainFinishTime},
+                #{kbFile.trainDuration},
+                #{kbFile.fileToken},
+                #{kbFile.status}
+                )
+    </insert>
+
+    <delete id="deleteKbFileById">
+        delete
+        from kb_file
+        where id = #{id}
+    </delete>
+
+    <select id="selectKbFileByFileNameAndSuffix" resultMap="KbFileResult">
+        select *
+        from kb_file
+        where original_file_name = #{fileName}
+          and suffix = #{suffix}
+    </select>
+
+    <select id="selectKbFileListByFileNameAndSuffix" resultMap="KbFileResult">
+        select *
+        from kb_file
+        where original_file_name = #{fileName}
+          and suffix = #{suffix}
+    </select>
+
+    <select id="selectKbFileTrainVoByFileIds" resultType="com.ruoyi.gpt.model.vo.kb_file.KbFileTrainVo">
+        select id as fileId,
+        original_file_name as fileName,
+        suffix,
+        download_url as blobUrl,
+        train_status as trainStatus
+        from kb_file
+        <where>
+            and id in
+            <foreach collection="fileIds" open="(" item="fileId" separator="," close=")">
+                #{fileId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="selectKbFileByIds" resultMap="KbFileResult">
+        select id,
+        original_file_name,
+        train_status,
+        create_by,
+        suffix,
+        create_time,
+        train_time
+        from kb_file
+        where id in
+        <foreach collection="fileIds" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </select>
+    <select id="selectExportKbFileList" resultType="com.ruoyi.gpt.model.vo.kb_file.KbFileExportVo" parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFilePageDto">
+        select
+        kf.id as id,
+        kf.original_file_name as originalFileName,
+        kf.train_status as trainStatus,
+        kf.create_by as createBy,
+        kf.suffix as suffix,
+        kf.create_time as createTime,
+        kf.train_time as trainTime,
+        kf.train_error_reason as trainErrorReason,
+        kf.train_finish_time as trainFinishTime,
+        kf.train_duration as trainDuration
+        from kb_file kf
+        join kb_file_manager_rel on kf.id = kb_file_manager_rel.file_id
+        join kb_manager km on kb_file_manager_rel.kb_id = km.id
+        left join kb_authorization ka on km.id = ka.kb_id
+        <where>
+            and km.kb_status = 1
+            and (
+            <if test="userName == null or userName == ''">
+                1 = 1
+            </if>
+            <if test="userName != null and userName != ''">
+                km.create_by = #{userName}
+            </if>
+            <if test="roleIds != null and roleIds.length != 0">
+                or ka.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            )
+            <if test="pageDto.kbName != null and pageDto.kbName != ''">
+                and km.kb_name = #{pageDto.kbName}
+            </if>
+            <if test="pageDto.trainStatus != null and pageDto.trainStatus != ''">
+                and kf.train_status = #{pageDto.trainStatus}
+            </if>
+            <if test="pageDto.fileName != null and pageDto.fileName != ''">
+                and kf.original_file_name like CONCAT('%', #{pageDto.fileName}, '%')
+            </if>
+            <if test="pageDto.suffix != null and pageDto.suffix != ''">
+                and kf.suffix = #{pageDto.suffix}
+            </if>
+            <if test="pageDto.startTime != null">
+                and kf.create_time <![CDATA[ >= ]]> #{pageDto.startTime}
+            </if>
+            <if test="pageDto.endTime != null">
+                and kf.create_time <![CDATA[ <= ]]> #{pageDto.endTime}
+            </if>
+            <if test="pageDto.trainStartTime != null">
+                and kf.train_time <![CDATA[ >= ]]> #{pageDto.trainStartTime}
+            </if>
+            <if test="pageDto.trainEndTime != null">
+                and kf.train_time <![CDATA[ <= ]]> #{pageDto.trainEndTime}
+            </if>
+        </where>
+        group by kf.id
+        order by kf.create_time desc
+    </select>
+
+    <delete id="deleteKbFileByIds">
+        delete
+        from kb_file
+        where id in
+        <foreach collection="fileIds" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </delete>
+
+    <update id="updateKbFileTrainStatus" parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFileUpdateTrainStatusDto">
+        update kb_file
+        <set>
+            <if test="kbFileUpdateTrainStatusDto.trainStatus != null and kbFileUpdateTrainStatusDto.trainStatus != ''">
+                train_status = #{kbFileUpdateTrainStatusDto.trainStatus},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.jsonCosUrl != null and kbFileUpdateTrainStatusDto.jsonCosUrl != ''">
+                json_cos_url = #{kbFileUpdateTrainStatusDto.jsonCosUrl},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.downloadUrlMd != null and kbFileUpdateTrainStatusDto.downloadUrlMd != ''">
+                download_url_md = #{kbFileUpdateTrainStatusDto.downloadUrlMd},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.trainTime != null">
+                train_time = #{kbFileUpdateTrainStatusDto.trainTime},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.trainErrorReason != null and kbFileUpdateTrainStatusDto.trainErrorReason != ''">
+                train_error_reason = #{kbFileUpdateTrainStatusDto.trainErrorReason},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.trainFinishTime != null">
+                train_finish_time = #{kbFileUpdateTrainStatusDto.trainFinishTime},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.trainDuration != null">
+                train_duration = #{kbFileUpdateTrainStatusDto.trainDuration},
+            </if>
+            <if test="kbFileUpdateTrainStatusDto.fileToken != null">
+                file_token = #{kbFileUpdateTrainStatusDto.fileToken},
+            </if>
+        </set>
+        where id in
+        <foreach collection="kbFileUpdateTrainStatusDto.id" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+
+    <update id="updateKbFileTrainStatusToWaiting"
+            parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFileUpdateTrainStatusDto">
+        update kb_file
+        set train_status = 'waiting',
+        train_time = #{trainTime}
+        where (train_status = 'untrained' or train_status = 'success' or train_status = 'error')
+        and id in
+        <foreach collection="id" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+
+    <update id="updateKbFileTrainStatusToDeleting"
+            parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFileUpdateTrainStatusDto">
+        update kb_file
+        set train_status = 'deleting',
+        train_time = #{trainTime}
+        where train_status != 'training'
+        and id in
+        <foreach collection="id" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+    <update id="updateKbFileTrainStatusToUntrained"
+            parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFileUpdateTrainStatusDto">
+        update kb_file
+        set train_status = 'untrained',
+        train_time = #{trainTime}
+        where id in
+        <foreach collection="id" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </update>
+
+    <update id="updateKbFileStatus">
+        update kb_file
+        set status = #{status}
+        where id = #{id}
+    </update>
+    
+    <update id="updateBookLevel" parameterType="com.ruoyi.gpt.model.dto.kb_file.KbFileBookLevelUpdateDto">
+        update kb_file
+        set book_level = #{bookLevel}
+        where id = #{fileId}
+    </update>
+    
+</mapper>

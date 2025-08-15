@@ -1,0 +1,324 @@
+.el-button--primary{
+  background: linear-gradient( 270deg, #6DA7CE 0%, #4E71EB 100%);
+  border: none;
+
+  &:hover, &:focus{
+    background: linear-gradient( 270deg, #80aece 0%, #617fe5 100%);
+    border: none;
+  }
+
+  &.is-disabled{
+    background: linear-gradient( 270deg, #a4c4da 0%, #90a4ea 100%);
+    border: none;
+
+    &:hover, &:focus{
+      background: linear-gradient( 270deg, #a4c4da 0%, #90a4ea 100%);
+      border: none;
+    }
+  }
+}
+
+.el-button.secondary{
+  color: #FFF;
+  background: #99ADD4;
+  border: none;
+
+  &:hover, &:focus{
+    color: #FFF;
+    background: #b3c2de;
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #FFF;
+    background: #c8d6ef;
+    border: none;
+
+    &:hover, &:focus{
+      color: #FFF;
+      background: #c8d6ef;
+      border: none;
+    }
+  }
+}
+
+
+.el-button.blue{
+  color: #395AB0;
+  background: rgba(220,232,255,0.47);
+  border: none;
+
+  &:hover, &:focus{
+    color: #405eb0;
+    background: rgba(192, 212, 243, 0.57);
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #abbbe6;
+    background: rgba(223, 231, 248, 0.47);
+    border: none;
+
+    &:hover, &:focus{
+      color: #abbbe6;
+      background: rgba(223, 231, 248, 0.47);
+      border: none;
+    }
+  }
+}
+
+.el-button.darkblue{
+  color: #FFF;
+  background: #4A5F9C;
+  border: none;
+
+  &:hover, &:focus{
+    color: #FFF;
+    background: #667dc1;
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #FFF;
+    background: #93a4d5;
+    border: none;
+
+    &:hover, &:focus{
+      color: #FFF;
+      background: #93a4d5;
+      border: none;
+    }
+  }
+}
+// hover、禁用 与默认 颜色不一样
+.el-button.green{
+  color: #5C855B;
+  background: rgba(171,216,193,0.23);
+  border: none;
+
+  &:hover, &:focus{
+    color: #548753;
+    background: rgba(142, 209, 175, 0.34);
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #85c584;
+    background: rgba(178, 225, 201, 0.34);
+    border: none;
+
+    &:hover, &:focus{
+      color: #85c584;
+      background: rgba(178, 225, 201, 0.34);
+      border: none;
+    }
+  }
+}
+
+// bc: rgba(227,203,201,0.38); c:#A56B6B
+.el-button.red{
+  color: #A56B6B;
+  background: rgba(227,203,201,0.38);
+  border: none;
+
+  &:hover, &:focus{
+    color: #b57070;
+    background: rgba(223, 191, 189, 0.42);
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #bc8e8e;
+    background: rgba(241, 229, 228, 0.38);
+    border: none;
+
+    &:hover, &:focus{
+      color: #bc8e8e;
+      background: rgba(241, 229, 228, 0.38);
+      border: none;
+    }
+  }
+}
+
+// bc: rgba(226,220,239,0.55); c:#5C5591
+.el-button.purple{
+  color: #5C5591;
+  background: rgba(226,220,239,0.55);
+  border: none;
+
+  &:hover, &:focus{
+    color: #4e4782;
+    background: rgba(209, 199, 232, 0.55);
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #9791c8;
+    background: rgba(246, 243, 251, 0.55);
+    border: none;
+
+    &:hover, &:focus{
+      color: #9791c8;
+      background: rgba(246, 243, 251, 0.55);
+      border: none;
+    }
+  }
+}
+
+// bc: rgba(213,224,242,0.62); c:#4C6AB1
+.el-button.blue-light{
+  color: #4C6AB1;
+  background: rgba(213,224,242,0.62);
+  border: none;
+
+  &:hover, &:focus{
+    color: #3a58a0;
+    background: rgba(191, 208, 236, 0.62);
+    border: none;
+  }
+
+  &.is-disabled{
+    color: #7a94d3;
+    background: rgba(231, 237, 246, 0.62);
+    border: none;
+
+    &:hover, &:focus{
+      color: #7a94d3;
+      background: rgba(231, 237, 246, 0.62);
+      border: none;
+    }
+  }
+}
+
+
+.el-button--primary.green{
+  background: linear-gradient( 270deg, #6DA4B8 0%, #6FC394 100%);
+  color: #FFFFFF;
+  border: none;
+
+  &:hover, &:focus{
+    background: linear-gradient( 270deg, #8ebfd1 0%, #89d3aa 100%);
+    color: #FFFFFF;
+    border: none;
+  }
+
+  &.is-disabled{
+    background: linear-gradient( 270deg, #cee4ec 0%, #a9dfc1 100%);
+    color: #FFFFFF;
+    border: none;
+
+    &:hover, &:focus{
+      background: linear-gradient( 270deg, #cee4ec 0%, #a9dfc1 100%);
+      color: #FFFFFF;
+      border: none;
+    }
+  }
+}
+
+.el-button--primary.blur-green{
+  background: linear-gradient( 270deg, #48D1B9 0%, #3E89C4 100%);
+  color: #FFFFFF;
+border: none;
+
+  &:hover, &:focus{
+    background: linear-gradient( 270deg, #5ec7b0 0%, #4e7dbf 100%);
+    color: #FFFFFF;
+    border: none;
+  }
+
+  &.is-disabled{
+    background: linear-gradient( 270deg, #a4e9e0 0%, #8fc1e6 100%);
+    color: #FFFFFF;
+    border: none;
+
+    &:hover, &:focus{
+      background: linear-gradient( 270deg, #a4e9e0 0%, #8fc1e6 100%);
+      color: #FFFFFF;
+      border: none;
+    }
+  }
+
+}
+
+.big-button{
+  border-radius: 4px;
+  width: 92px;
+  height:92px;
+  position: relative;
+  cursor: pointer;
+
+  span{
+    line-height: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    margin: auto;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  &.blue{
+    background: #E8EDF5;
+    color: #3E5FAF;
+  }
+
+  &.green{
+    background: #EAEEEC;
+    color: #1E8393;
+  }
+
+  &:hover{
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.1);
+    opacity: 0.85;
+    transition: all 0.3s;
+  }
+}
+
+.el-button--text{
+  color: #1B3B71;
+
+  &:hover, &:focus{
+    color: #2f528d;
+  }
+}
+
+.cancel-button{
+/*  background-color: #a7a7a7;
+  color: #FFFFFF;*/
+  color: #bcbcbc;
+  border-radius: 10px;
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+  //display: inline-flex;
+  //align-items: center;
+  //justify-content: center;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.thin{
+  padding: 10px 12px !important;
+}
+
+.retry-button{
+  opacity: 0.6;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover{
+    opacity: 8;
+    transition: all 0.3s;
+  }
+}
+
+.el-button-radiow {
+  .el-radio-button__inner{
+    border: none !important;
+  }
+  margin-right: 20px;
+}
+

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.UserChatHistoryMapper">
+
+    <resultMap type="UserChatHistory" id="UserChatHistoryResult">
+        <result property="id" column="id"/>
+        <result property="history" column="history"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="promptId" column="prompt_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectUserChatHistoryVo">
+        select uch.id,
+               uch.history,
+               uch.dept_id,
+               uch.user_id,
+               uch.prompt_id,
+               uch.create_by,
+               uch.create_time,
+               uch.update_by,
+               uch.update_time,
+               uch.remark
+        from user_chat_history AS uch
+    </sql>
+
+    <select id="selectUserChatHistoryList" parameterType="UserChatHistory" resultMap="UserChatHistoryResult">
+        <include refid="selectUserChatHistoryVo"/>
+        <where>
+            <if test="deptId != null ">and uch.dept_id = #{deptId}</if>
+            <if test="userId != null ">and uch.user_id = #{userId}</if>
+            ${params.dataScope}
+        </where>
+        order by uch.create_time desc
+    </select>
+
+    <select id="selectUserChatHistoryById" parameterType="Long" resultMap="UserChatHistoryResult">
+        <include refid="selectUserChatHistoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertUserChatHistory" parameterType="UserChatHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into user_chat_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="history != null">history,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="promptId != null">prompt_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="history != null">#{history},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="promptId != null">#{promptId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateUserChatHistory" parameterType="UserChatHistory">
+        update user_chat_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="history != null">history = #{history},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="promptId != null">prompt_id = #{promptId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserChatHistoryById" parameterType="Long">
+        delete
+        from user_chat_history
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteUserChatHistoryByIds" parameterType="String">
+        delete from user_chat_history where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.PromptLibraryMapper">
+    
+    <resultMap type="PromptLibrary" id="PromptLibraryResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPromptLibraryVo">
+        select id, type, title, content, user_id, create_by, create_time, update_by, update_time from prompt_library
+    </sql>
+
+    <select id="selectPromptLibraryList" parameterType="com.ruoyi.gpt.model.dto.prompt_library.PromptLibraryListDto" resultMap="PromptLibraryResult">
+        select pl.id, pl.type, pl.title, pl.content, pl.user_id, pl.create_by, pl.create_time, pl.update_by, pl.update_time from prompt_library pl
+        <where>
+            <if test="title != null  and title != ''"> and pl.title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and pl.content = #{content}</if>
+            <if test="type == 'community'  and type != null"> and pl.type = #{type}</if>
+            <if test="type == 'individual'  and type != null"> and pl.type = #{type}
+             and pl.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPromptLibrarySelectList" parameterType="com.ruoyi.gpt.model.dto.prompt_library.PromptLibrarySelectListDto" resultType="com.ruoyi.gpt.model.vo.prompt_library.PromptLibrarySelectListVo">
+        select pl.id, pl.type, pl.title, pl.content from prompt_library pl
+        <where>
+            <if test="title != null  and title != ''"> and pl.title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and pl.content = #{content}</if>
+            <if test="type == 'community'  and type != null"> and pl.type = #{type}</if>
+            <if test="type == 'individual'  and type != null"> and pl.type = #{type}
+                and pl.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectPromptLibraryById" parameterType="Long" resultMap="PromptLibraryResult">
+        <include refid="selectPromptLibraryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPromptLibrary" parameterType="PromptLibrary">
+        insert into prompt_library
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePromptLibrary" parameterType="PromptLibrary">
+        update prompt_library
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePromptLibraryById" parameterType="Long">
+        delete from prompt_library where id = #{id}
+    </delete>
+
+    <delete id="deletePromptLibraryByIds" parameterType="String">
+        delete from prompt_library where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,40 @@
+.el-tabs__item {
+  color: #2D436B85;
+
+  &:hover {
+    color: #2D436BCC;
+  }
+
+  &.is-active {
+    color: #254F91;
+  }
+}
+
+.el-tabs__active-bar {
+  background-color: #254F91;
+}
+
+.el-tabs--top {
+  &.is-center {
+    .el-tabs__nav-scroll {
+      align-content: center;
+      justify-content: center;
+      display: flex;
+    }
+  }
+
+  &.no-margin {
+    .el-tabs__header {
+
+      margin-bottom: 1px;
+    }
+  }
+}
+
+.el-tabs__nav-wrap::after {
+  background-color: rgba(151, 151, 151, 0.14);
+}
+
+.el-tabs__item.is-disabled:hover{
+  color: #C0C4CC;
+}

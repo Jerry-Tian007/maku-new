@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.MessageRecordMapper">
+    <resultMap id="UnsentMessaageRecordResult" type="com.ruoyi.gpt.model.domain.MessageRecord">
+        <result property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="exchange" column="exchange"/>
+        <result property="routingKey" column="routing_key"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="sendingStatus" column="sending_status"/>
+    </resultMap>
+
+    <sql id="selectUnsentMessageRecord">
+        select id, content, exchange, routing_key, create_time, create_by, update_time, update_by, sending_status
+        from message_record
+    </sql>
+
+    <insert id="insertUnsentMessaageRecord" parameterType="com.ruoyi.gpt.model.domain.MessageRecord">
+        insert into message_record (id,
+        content,
+        exchange,
+        routing_key,
+        create_time,
+        create_by)
+        values (#{MessageRecord.id},
+        #{MessageRecord.content},
+        #{MessageRecord.exchange},
+        #{MessageRecord.routingKey},
+        #{MessageRecord.createTime},
+        #{MessageRecord.createBy})
+    </insert>
+
+    <delete id="deleteUnsentMessageRecord">
+        delete
+        from message_record
+        where id = #{id}
+    </delete>
+
+    <select id="selectFailedMessageRecordList" resultMap="UnsentMessaageRecordResult">
+        <include refid="selectUnsentMessageRecord"/>
+        where sending_status = 'failed'
+    </select>
+
+    <update id="updateUnsentMessageRecord" parameterType="com.ruoyi.gpt.model.domain.MessageRecord">
+        update message_record
+        set sending_status = #{MessageRecord.sendingStatus},
+        update_time = #{MessageRecord.updateTime}
+        where id = #{MessageRecord.id}
+    </update>
+</mapper>

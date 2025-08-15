@@ -1,0 +1,9 @@
+.el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus{
+  background: #DEE7F8;
+  color: #254F91;
+}
+
+.el-dropdown-menu--medium .el-dropdown-menu__item{
+  margin: 0 6px;
+  padding: 0 12px;
+}

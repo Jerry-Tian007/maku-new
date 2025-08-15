@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ModelResourceTemplateMapper">
+
+    <resultMap type="ModelResourceTemplate" id="ModelResourceTemplateResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="template" column="template"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="scene" column="scene"/>
+    </resultMap>
+
+    <sql id="selectModelResourceTemplateVo">
+        select id,
+               type,
+               template,
+               scene,
+               remark,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from model_resource_template
+    </sql>
+
+    <select id="selectModelResourceTemplateList" parameterType="ModelResourceTemplate"
+            resultMap="ModelResourceTemplateResult">
+        <include refid="selectModelResourceTemplateVo"/>
+        <where>
+            <if test="type != null  and type != ''">and type = #{type}</if>
+            <if test="template != null  and template != ''">and template = #{template}</if>
+        </where>
+    </select>
+
+    <select id="selectModelResourceTemplateById" parameterType="Long" resultMap="ModelResourceTemplateResult">
+        <include refid="selectModelResourceTemplateVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getSelect" resultType="com.ruoyi.gpt.model.vo.model_resources.ModelResourcesSelectVo">
+        select model_resource_template.id,
+        model_resource_template.type,
+        model_resource_template.icon,
+        model_resource_template.scene
+        from model_resource_template
+        left join model_resource_role on model_resource_template.id = model_resource_role.model_resource_template_id
+        <where>
+            <if test="roleIds != null and roleIds.length > 0">
+                and model_resource_role.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+        group by model_resource_template.id
+        order by model_resource_template.create_time desc
+    </select>
+
+    <select id="getAllSelect" resultType="com.ruoyi.gpt.model.vo.model_resources.ModelResourcesSelectVo">
+        select id, type, icon, scene
+        from model_resource_template
+        order by model_resource_template.create_time desc
+    </select>
+    <select id="selectModelResourceTemplateListForPlatform"
+            parameterType="com.ruoyi.gpt.model.dto.model_resource_template.ModelResourceTemplateListDto"
+            resultMap="ModelResourceTemplateResult">
+        <include refid="selectModelResourceTemplateVo"/>
+        <where>
+            <if test="type != null  and type != ''">and type = #{type}</if>
+            <if test="template != null  and template != ''">and template like concat('%',#{template},'%')</if>
+        </where>
+    </select>
+
+    <insert id="insertModelResourceTemplate" parameterType="ModelResourceTemplate" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into model_resource_template(id,
+                                            type,
+                                            template,
+                                            remark,
+                                            create_by,
+                                            create_time,
+                                            scene,
+                                            icon)
+        values (#{id},
+                #{type},
+                #{template},
+                #{remark},
+                #{createBy},
+                #{createTime},
+                #{scene},
+                #{icon})
+    </insert>
+
+    <update id="updateModelResourceTemplate" parameterType="ModelResourceTemplate">
+        update model_resource_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="template != null">template = #{template},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="scene != null">scene = #{scene},</if>
+            <if test="icon != null">icon = #{icon},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteModelResourceTemplateById" parameterType="Long">
+        delete
+        from model_resource_template
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteModelResourceTemplateByIds" parameterType="String">
+        delete from model_resource_template where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

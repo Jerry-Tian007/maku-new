@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbAuthorizationMapper">
+    <resultMap id="KbAuthorizationResultMap" type="com.ruoyi.gpt.model.domain.KbAuthorization">
+        <result property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="kbId" column="kb_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+    </resultMap>
+
+    <insert id="insertKbAuthorization" parameterType="com.ruoyi.gpt.model.domain.KbAuthorization">
+        insert into kb_authorization (id,
+                                      role_id,
+                                      kb_id,
+                                      create_by,
+                                      create_time)
+        values
+        <foreach collection="kbAuthorizationList" item="kbAuthorization" separator=",">
+            (#{kbAuthorization.id},
+             #{kbAuthorization.roleId},
+             #{kbAuthorization.kbId},
+             #{kbAuthorization.createBy},
+             #{kbAuthorization.createTime})
+        </foreach>
+    </insert>
+
+    <select id="selectKbAuthorizationPageVo" resultType="com.ruoyi.gpt.model.vo.kb_authorization.KbAuthorizationPageVo">
+        select sr.role_id as roleId,
+        sr.role_name as roleName
+        from kb_authorization ka
+        left join sys_role sr on ka.role_id = sr.role_id
+        <where>
+            and sr.del_flag = 0
+            <if test="roleIds != null and roleIds.length != 0">
+                and ka.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            <if test="kbAuthorizationPageDto.createBy != null and kbAuthorizationPageDto.createBy != ''">
+                and ka.create_by like concat('%',#{kbAuthorizationPageDto.createBy},'%')
+            </if>
+            <if test="kbAuthorizationPageDto.roleName != null and kbAuthorizationPageDto.roleName != ''">
+                and sr.role_name like concat('%',#{kbAuthorizationPageDto.roleName},'%')
+            </if>
+        </where>
+        group by sr.role_id
+    </select>
+
+    <select id="selectKbAuthorizationPageSubVo" resultType="com.ruoyi.gpt.model.vo.kb_authorization.KbAuthorizationPageSubVo">
+        select ka.role_id     as roleId,
+               km.kb_name     as kbName,
+               ka.create_time as createTime,
+               ka.create_by   as createBy
+        from kb_authorization ka
+                 left join kb_manager km on ka.kb_id = km.id
+        <where>
+            km.kb_status = 1
+            <if test="roleIds != null and roleIds.length != 0">
+                and ka.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getSelect" resultType="com.ruoyi.gpt.model.vo.kb_authorization.KbAuthorizationSelectVo">
+        select km.kb_name as kbName,
+        km.id as kbId
+        from kb_manager km
+        left join kb_authorization ka on ka.kb_id = km.id
+        <where>
+            km.kb_status = 1
+            and (
+            <if test="userName == null or userName == ''">
+                1 = 1
+            </if>
+            <if test="userName != null and userName != ''">
+                km.create_by = #{userName}
+            </if>
+            <if test="roleIds != null and roleIds.length != 0">
+                or ka.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            )
+        </where>
+        group by km.id
+    </select>
+
+    <select id="getKbListByRoleId" resultType="java.lang.String">
+        select ka.kb_id
+        from kb_authorization ka
+        where ka.role_id = #{roleId}
+    </select>
+
+    <delete id="deleteKbAuthorizationByRoleId">
+        delete
+        from kb_authorization
+        where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteKbAuthorizationByKbId">
+        delete
+        from kb_authorization
+        where kb_id = #{kbId}
+    </delete>
+</mapper>

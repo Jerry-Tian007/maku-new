@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.HomepageCarouselMapper">
+    
+    <resultMap type="HomepageCarousel" id="HomepageCarouselResult">
+        <result property="id"    column="id"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="linkUrl"    column="link_url"    />
+        <result property="displayOrder"    column="display_order"    />
+        <result property="remark"   column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectHomepageCarouselVo">
+        select id, image_url, link_url, display_order, remark, create_time, create_by, update_time, update_by from homepage_carousel
+    </sql>
+
+    <select id="selectHomepageCarouselList" parameterType="HomepageCarousel" resultMap="HomepageCarouselResult">
+        <include refid="selectHomepageCarouselVo"/>
+        <where>  
+            <if test="imageUrl != null  and imageUrl != ''"> and image_url = #{imageUrl}</if>
+            <if test="linkUrl != null  and linkUrl != ''"> and link_url = #{linkUrl}</if>
+            <if test="remark != null  and remark != ''"> and remark like concat('%', #{remark}, '%')</if>
+        </where>
+        ORDER BY create_time DESC, update_time DESC
+    </select>
+
+    <select id="selectHomepageCarouselDisplayList" parameterType="HomepageCarousel" resultMap="HomepageCarouselResult">
+        <include refid="selectHomepageCarouselVo"/>
+        <where>
+            <if test="imageUrl != null  and imageUrl != ''"> and image_url = #{imageUrl}</if>
+            <if test="linkUrl != null  and linkUrl != ''"> and link_url = #{linkUrl}</if>
+            and display_order IS NOT NULL
+        </where>
+        ORDER BY display_order
+    </select>
+    
+    <select id="selectHomepageCarouselById" parameterType="Long" resultMap="HomepageCarouselResult">
+        <include refid="selectHomepageCarouselVo"/>
+        where id = #{id}
+    </select>
+
+        
+    <insert id="insertHomepageCarousel" parameterType="com.ruoyi.gpt.model.dto.homepage_carousel.HomepageCarouselInsertDto">
+        insert into homepage_carousel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url,</if>
+            <if test="linkUrl != null and linkUrl != ''">link_url,</if>
+            <if test="displayOrder != null">display_order,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="imageUrl != null and imageUrl != ''">#{imageUrl},</if>
+            <if test="linkUrl != null and linkUrl != ''">#{linkUrl},</if>
+            <if test="displayOrder != null">#{displayOrder},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHomepageCarousel" parameterType="com.ruoyi.gpt.model.dto.homepage_carousel.HomepageCarouselEditDto">
+        update homepage_carousel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imageUrl != null and imageUrl != ''">image_url = #{imageUrl},</if>
+            <if test="linkUrl != null">link_url = #{linkUrl},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateHomepageCarouselDisplayOrder" parameterType="java.util.List">
+        UPDATE homepage_carousel
+        SET display_order =
+        CASE
+        <foreach collection="list" item="item" separator=" ">
+            WHEN id = #{item.id} THEN #{item.displayOrder}
+        </foreach>
+        END
+        WHERE id IN(
+        <foreach collection="list" item="item" separator=", ">
+            #{item.id}
+        </foreach>
+        )
+
+    </update>
+    <update id="resetHomepageCarouselDisplayOrder">
+        UPDATE homepage_carousel
+        SET display_order = NULL
+        WHERE display_order IS NOT NULL
+    </update>
+
+    <delete id="deleteHomepageCarouselById" parameterType="Long">
+        delete from homepage_carousel where id = #{id}
+    </delete>
+
+    <delete id="deleteHomepageCarouselByIds" parameterType="String">
+        delete from homepage_carousel where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

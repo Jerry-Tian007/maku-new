@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRegionMapper">
+    
+    <resultMap type="com.ruoyi.common.core.domain.entity.SysRegion" id="SysRegionResult">
+        <result property="regionId"    column="region_id"    />
+        <result property="region"    column="region"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+    </resultMap>
+
+    <sql id="selectSysRegionVo">
+        select region_id, region, parent_id, ancestors from sys_region
+    </sql>
+
+    <select id="selectSysRegionList" parameterType="com.ruoyi.common.core.domain.entity.SysRegion" resultMap="SysRegionResult">
+        <include refid="selectSysRegionVo"/>
+        <where>  
+            <if test="regionId != null "> and region_id = #{regionId}</if>
+            <if test="region != null  and region != ''"> and region = #{region}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysRegionByRegionId" parameterType="Long" resultMap="SysRegionResult">
+        <include refid="selectSysRegionVo"/>
+        where region_id = #{regionId}
+    </select>
+
+    <select id="selectSysRegionByRegion" parameterType="String" resultMap="SysRegionResult">
+        <include refid="selectSysRegionVo"/>
+        where region = #{region}
+    </select>
+
+    <insert id="insertSysRegion" parameterType="com.ruoyi.common.core.domain.entity.SysRegion">
+        insert into sys_region
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="regionId != null">region_id,</if>
+            <if test="region != null and region != ''">region,</if>
+            <if test="parentId != null and parentId != 0">parent_id,</if>
+            <if test="ancestors != null and ancestors != ''">ancestors,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="regionId != null">#{regionId},</if>
+            <if test="region != null and region != ''">#{region},</if>
+            <if test="parentId != null and parentId != 0">#{parentId},</if>
+            <if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysRegion" parameterType="com.ruoyi.common.core.domain.entity.SysRegion">
+        update sys_region
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="region != null and region != ''">region = #{region},</if>
+            <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+            <if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
+        </trim>
+        where region_id = #{regionId}
+    </update>
+
+    <delete id="deleteSysRegionByRegionId" parameterType="Long">
+        delete from sys_region where region_id = #{regionId}
+    </delete>
+
+    <delete id="deleteSysRegionByRegionIds" parameterType="String">
+        delete from sys_region where region_id in 
+        <foreach item="regionId" collection="array" open="(" separator="," close=")">
+            #{regionId}
+        </foreach>
+    </delete>
+</mapper>

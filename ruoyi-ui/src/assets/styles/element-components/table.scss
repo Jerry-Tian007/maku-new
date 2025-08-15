@@ -1,0 +1,37 @@
+
+.el-table.color-table {
+  background-color: transparent;
+
+  .el-table__fixed-header-wrapper th{
+    background-color: #FFFFFFC0 !important;
+  }
+
+  .el-table__fixed-body-wrapper .el-table__cell{
+    background-color: #FFFFFFC0 !important;
+  }
+
+
+  tr {
+    background-color: transparent;
+  }
+
+  .el-table__header-wrapper th, .el-table__fixed-header-wrapper th {
+    background-color: transparent;
+
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 600;
+    font-size: 12px;
+    color: rgba(44, 44, 44, 0.7);
+    line-height: 17px;
+  }
+
+  .el-table__body-wrapper {
+    th.el-table__cell.is-leaf, td.el-table__cell {
+      font-family: PingFangSC, PingFang SC;
+      font-weight: 400;
+      font-size: 14px;
+      color: rgba(44, 44, 44, 0.7);
+      line-height: 20px;
+    }
+  }
+}

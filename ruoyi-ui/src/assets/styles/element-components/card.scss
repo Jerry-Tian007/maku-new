@@ -1,0 +1,205 @@
+.el-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, #FFFFFF 100%);
+  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.11);
+  border-radius: 4px;
+
+
+  .tool-bar-line {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+
+  }
+  .tool-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+
+    &.disabled{
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .tool-bar-item {
+      padding: 4px;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #4B4B4B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: #eef0f4;
+        transition: all 0.3s;
+      }
+
+      &.disabled {
+        cursor: auto;
+        opacity: 0.5;
+
+        :hover {
+          cursor: auto;
+        }
+
+      }
+    }
+  }
+
+  &.plain {
+    box-shadow: none;
+  }
+
+  &.border{
+    box-shadow: none;
+    //border: 1px solid #E6ECF7;
+    border: 1px solid #dae3f4;
+  }
+
+  &.blue {
+    background: #ECF2FD;
+    box-shadow: none;
+    border: none;
+  }
+
+  &.bot {
+    background: #E6ECF7;
+    box-shadow: none;
+    border: none;
+
+    font-size: 14px;
+    color: #00000089;
+    line-height: 20px;
+    border-radius: 0px 11px 11px 11px;
+
+    &.follow{
+      border-radius: 11px 11px 11px 11px;
+      opacity: .75;
+      cursor: pointer;
+      transition: all 0.3s;
+
+
+      .el-card__body {
+        padding: 8px 12px;
+      }
+
+      &:hover{
+        box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.1);
+        opacity: 1;
+        transition: all 0.3s;
+      }
+    }
+
+    .el-card__body {
+      padding: 10px 16px;
+      //white-space: pre-line;
+      word-break: break-word;
+
+
+      .markdown-body{
+        font-size: 14px !important;
+        color: #00000089;
+        line-height: 20px;
+        font-family: PingFangSC, PingFang SC !important;
+
+        ol, ul{
+          list-style: auto;
+        }
+
+
+        table{
+          border-radius: 10px;
+        }
+      }
+
+    }
+
+    .tool-bar-item {
+      color: #647EA6;
+
+      &:hover {
+        background: #dde3ef;
+      }
+    }
+  }
+
+  &.user {
+    background: #CDDBEA;
+    box-shadow: none;
+    border: none;
+    border-radius: 11px 0px 11px 11px;
+
+    font-size: 14px;
+    color: #27476F;
+    line-height: 20px;
+
+    .el-card__body {
+      padding: 10px 16px;
+      //white-space: pre-line;
+      word-break: break-word;
+
+
+      .markdown-body{
+        font-size: 14px !important;
+        color: #27476F;
+        line-height: 20px;
+        font-family: PingFangSC, PingFang SC !important;
+      }
+
+    }
+
+
+  }
+
+  &.no-pd-v{
+    padding-top: 0;
+    padding-bottom: 0;
+
+    .el-card__body{
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  &.no-pd-h{
+    padding-left: 0;
+    padding-right: 0;
+
+    .el-card__body{
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+}
+
+.tool-item-button {
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #4B4B4B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #cbccce;
+    transition: all 0.3s;
+  }
+
+  &.disabled {
+    cursor: auto;
+    opacity: 0.5;
+
+    :hover {
+      cursor: auto;
+    }
+  }
+}

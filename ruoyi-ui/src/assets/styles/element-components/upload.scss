@@ -1,0 +1,31 @@
+.el-upload-dragger {
+  background-color: transparent;
+  border-radius: 10px;
+
+  .icon-inside {
+    font-size: 67px;
+    color: #C0C4CC;
+    margin: 40px 0 16px;
+    line-height: 50px;
+  }
+
+  &:hover, &:focus {
+    border-color: $border-color;
+  }
+}
+
+.el-upload:focus .el-upload-dragger {
+  border-color: $border-color;
+}
+
+.el-upload-dragger .el-upload__text em {
+  color: $main-text;
+}
+
+.auto-width {
+  .el-upload-dragger {
+    width: 100%;
+    padding: 0 20px;
+    min-width: 240px;
+  }
+}

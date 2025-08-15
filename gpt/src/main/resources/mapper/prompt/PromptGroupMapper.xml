@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.PromptGroupMapper">
+
+    <resultMap type="PromptGroup" id="PromptGroupResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="icon" column="icon"/>
+        <result property="isPublish" column="is_publish"/>
+        <result property="orderPublish" column="order_publish"/>
+    </resultMap>
+
+    <sql id="selectPromptGroupVo">
+        select id,
+               name,
+               create_by,
+               create_time,
+               update_time,
+               update_by,
+               icon,
+               is_publish,
+               order_publish
+        from prompt_group
+    </sql>
+
+    <select id="selectPromptGroupList" parameterType="PromptGroup" resultMap="PromptGroupResult">
+        <include refid="selectPromptGroupVo"/>
+        <where>
+            <if test="name != null  and name != ''">and `name` like concat('%', #{name}, '%')</if>
+            <if test="createBy != null ">and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="isPublish != null ">and is_publish = #{isPublish}</if>
+            <if test="startTime != null ">and create_time &gt;= CONCAT(#{startTime},' 00:00:00')</if>
+            <if test="endTime != null ">and create_time &lt;= CONCAT(#{endTime},' 00:00:00')</if>
+        </where>
+    </select>
+
+    <select id="selectPromptGroupById" parameterType="Long" resultMap="PromptGroupResult">
+        <include refid="selectPromptGroupVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPromptGroupHomeList" resultType="com.ruoyi.gpt.model.domain.PromptGroup">
+        <include refid="selectPromptGroupVo"/>
+        <where>
+            is_publish = 1
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="icon != null  and icon != ''">and icon = #{icon}</if>
+        </where>
+        order by order_publish desc
+    </select>
+
+    <select id="selectPromptGroupUnderManageList"
+            parameterType="com.ruoyi.gpt.model.dto.prompt_group.PromptGroupUnderManageDto"
+            resultType="com.ruoyi.gpt.model.domain.PromptManage">
+        select id,
+        model,
+        `group`,
+        title,
+        content, is_publish as isPublish, is_select as isSelect, order_publish as orderPublish, order_select as
+        orderSelect, create_by,
+        create_time,update_time,update_by,remark,introduction,prologue,preset_problem as presetProblem,icon from
+        prompt_manage
+        <where>
+            del_flag = '0' and
+            is_publish = 1
+            <if test="group != null  and group != ''">and `group`= #{group}</if>
+        </where>
+        order by order_publish ASC
+    </select>
+    <select id="selectPromptGroupSelectList" resultType="com.ruoyi.gpt.model.domain.PromptGroup">
+        <include refid="selectPromptGroupVo"/>
+        <where>
+            is_publish = 1
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="icon != null  and icon != ''">and icon = #{icon}</if>
+        </where>
+        order by order_publish desc
+    </select>
+    <select id="selectPromptGroupHomeSelectList"
+            parameterType="com.ruoyi.gpt.model.dto.prompt_group.PromptGroupUnderManageDto"
+            resultType="com.ruoyi.gpt.model.domain.PromptManage">
+        select id,
+        model,
+        `group`,
+        title,
+        content, is_publish as isPublish, is_select as isSelect, order_publish as orderPublish, order_select as
+        orderSelect, create_by,
+        create_time,update_time,update_by,remark,introduction,prologue,preset_problem as presetProblem,icon from
+        prompt_manage
+        <where>
+            del_flag = '0' and
+            is_select = 1
+            <if test="group != null  and group != ''">and `group`= #{group}</if>
+        </where>
+        order by order_select ASC
+    </select>
+
+    <insert id="insertPromptGroup" parameterType="PromptGroup">
+        insert into prompt_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">`name`,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="icon != null">icon,</if>
+            <if test="isPublish != null">is_publish,</if>
+            <if test="orderPublish != null">order_publish,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="isPublish != null">#{isPublish},</if>
+            <if test="orderPublish != null">#{orderPublish},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePromptGroup" parameterType="PromptGroup">
+        update prompt_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="isPublish != null">is_publish = #{isPublish},</if>
+            <if test="orderPublish != null">order_publish = #{orderPublish},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="publishPromptGroup">
+        update prompt_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isPublish != null">is_publish = #{isPublish},</if>
+            <if test="orderPublish != null">order_publish = #{orderPublish},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePromptGroupById" parameterType="Long">
+        delete
+        from prompt_group
+        where id = #{id}
+    </delete>
+
+    <delete id="deletePromptGroupByIds" parameterType="String">
+        delete from prompt_group where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.HotQuestionMapper">
+
+    <resultMap type="HotQuestion" id="HotQuestionResult">
+        <result property="id" column="id"/>
+        <result property="question" column="question"/>
+        <result property="answer" column="answer"/>
+        <result property="createTime" column="create_time"/>
+        <result property="region" column="region"/>
+        <result property="role" column="role"/>
+        <result property="isAccuracy" column="is_accuracy"/>
+        <result property="createBy" column="create_by"/>
+        <result property="status" column="status"/>
+        <result property="language" column="language"/>
+        <result property="recordId" column="record_id"/>
+        <result property="trainTime" column="train_time"/>
+        <result property="trainFlow" column="train_flow"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.HotQuestionVo" id="HotQuestionVoResult">
+        <result property="id" column="id"/>
+        <result property="question" column="question"/>
+        <result property="answer" column="answer"/>
+        <result property="region" column="region"/>
+        <result property="role" column="role"/>
+        <result property="createTime" column="create_time"/>
+        <result property="isAccuracy" column="is_accuracy"/>
+        <result property="createBy" column="create_by"/>
+        <result property="status" column="status"/>
+        <result property="language" column="language"/>
+        <result property="recordId" column="record_id"/>
+        <result property="trainTime" column="train_time"/>
+        <result property="trainFlow" column="train_flow"/>
+    </resultMap>
+
+    <sql id="selectHotQuestionVo">
+        select id,
+               question,
+               answer,
+               create_time,
+               region,
+               role,
+               is_accuracy,
+               create_by,
+               status,
+               region,
+               role, language, record_id, train_flow, train_time
+        from hot_question
+    </sql>
+
+    <select id="selectHotQuestionList" parameterType="com.ruoyi.gpt.model.vo.HotQuestionVo"
+            resultMap="HotQuestionVoResult">
+        select
+        hq.id,
+        hq.role,
+        hq.region,
+        hq.question,
+        hq.answer,
+        hq.create_time,
+        hq.is_accuracy,
+        hq.create_by,
+        hq.status,
+        hq.language,
+        hq.record_id,
+        hq.train_flow,
+        hq.train_time
+        from hot_question hq
+        <where>
+            <if test="id != null ">and hq.id = #{id}</if>
+            <if test="question != null  and question != ''">and hq.question like CONCAT('%', #{question}, '%')</if>
+            <if test="answer != null  and answer != ''">and hq.answer like CONCAT('%', #{answer}, '%')</if>
+            <if test="isAccuracy != null  and isAccuracy != ''">and hq.is_accuracy = #{isAccuracy}</if>
+            <if test="status != null  and status != ''">and hq.status = #{status}</if>
+            <if test="createBy != null  and createBy != ''">and hq.create_by like CONCAT('%', #{createBy}, '%')</if>
+            <if test="createTime != null  and createTime != ''">and hq.create_time = #{createTime}</if>
+            <if test="startTime!= null">and hq.create_time <![CDATA[ >= ]]> #{startTime,jdbcType=TIMESTAMP}</if>
+            <if test="endTime!= null">and hq.create_time <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}</if>
+            <if test="region != null">
+                and REGEXP_LIKE(hq.region, CONCAT('^(?=.*\\b', REPLACE(#{region}, ';', '\\b)(?=.*\\b'), '\\b).*$'))
+            </if>
+            <if test="role != null">
+                and REGEXP_LIKE(hq.role, CONCAT('^(?=.*\\b', REPLACE(#{role}, ';', '\\b)(?=.*\\b'), '\\b).*$'))
+            </if>
+            <if test="language!= null">and hq.language = #{language}</if>
+            <if test="recordId!= null">and hq.record_id = #{recordId}</if>
+            <if test="recordId == null or recordId == ''">and hq.record_id != '1000000000000'</if>
+        </where>
+        order by hq.create_time desc
+    </select>
+
+    <select id="selectHotQuestionById" parameterType="Long" resultMap="HotQuestionVoResult">
+        select hq.id,
+               hq.role,
+               hq.region,
+               hq.question,
+               hq.answer,
+               hq.create_time,
+               hq.is_accuracy,
+               hq.create_by,
+               hq.status,
+               hq.language,
+               hq.record_id,
+               hq.train_flow,
+               hq.train_time
+        from hot_question hq
+        where id = #{id}
+    </select>
+
+
+    <select id="selectHotQuestionListWoTai" resultType="com.ruoyi.gpt.model.vo.HotQuestionVo">
+        select distinct hq.question
+        from hot_question hq
+        where REGEXP_LIKE(hq.region, CONCAT('^(?=.*\\b', REPLACE(#{region}, ';', '\\b)(?=.*\\b'), '\\b).*$'))
+          AND REGEXP_LIKE(hq.role, CONCAT('^(?=.*\\b', REPLACE(#{role}, ';', '\\b)(?=.*\\b'), '\\b).*$'))
+          and hq.language = #{language}
+        ORDER BY RAND() limit #{questionNum}
+    </select>
+
+    <select id="selectDistinctLanguage" resultMap="HotQuestionVoResult">
+        SELECT DISTINCT language
+        FROM hot_question
+        WHERE language IS NOT NULL AND language != 'record_id';
+    </select>
+
+    <insert id="insertHotQuestion" parameterType="HotQuestion" useGeneratedKeys="true" keyProperty="id">
+        insert into hot_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="question != null">question,</if>
+            <if test="answer != null">answer,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="isAccuracy != null">is_accuracy,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="status != null">status,</if>
+            <if test="region != null">region,</if>
+            <if test="role != null">role,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="language != null">language,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="question != null">#{question},</if>
+            <if test="answer != null">#{answer},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="isAccuracy != null">#{isAccuracy},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="status != null">#{status},</if>
+            <if test="region != null">#{region},</if>
+            <if test="role != null">#{role},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="language != null">#{language},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHotQuestion" parameterType="HotQuestion">
+        update hot_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="question != null">question = #{question},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="region != null">region = #{region},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="isAccuracy != null">is_accuracy = #{isAccuracy},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="trainFlow != null">train_flow = #{trainFlow},</if>
+            <if test="trainTime != null">train_time = #{trainTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatchHotQuestionTranStatusByRecordId">
+        UPDATE hot_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="trainFlow != null">train_flow = #{trainFlow},</if>
+            <if test="trainTime != null">train_time = #{trainTime},</if>
+        </trim>
+        WHERE record_id = #{recordId}
+        AND language = #{language}
+    </update>
+
+    <update id="updateBatchHotQuestionByRecordId">
+        UPDATE hot_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="region != null">region = #{region},</if>
+            <if test="role != null">role = #{role},</if>
+        </trim>
+        WHERE record_id = #{recordId}
+    </update>
+
+    <update id="updateSingleHotQuestionByRecordId">
+        UPDATE hot_question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="region != null">region = #{region},</if>
+            <if test="role != null">role = #{role},</if>
+        </trim>
+        WHERE record_id = #{recordId}
+        AND language = #{language}
+    </update>
+
+
+    <delete id="deleteHotQuestionById" parameterType="Long">
+        delete
+        from hot_question
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteHotQuestionByIds" parameterType="String">
+        delete from hot_question where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteHotQuestionByRecordIds">
+        delete from hot_question where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+</mapper>

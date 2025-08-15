@@ -1,0 +1,48 @@
+.el-divider--horizontal{
+  &.m4{
+    margin: 4px 0;
+  }
+  &.m8{
+    margin: 8px 0;
+  }
+  &.m12{
+    margin: 12px 0;
+  }
+  &.m16{
+    margin: 16px 0;
+  }
+  &.m20{
+    margin: 20px 0;
+  }
+}
+
+.el-divider--vertical{
+  &.m4{
+    margin: 0 4px;
+  }
+  &.m8{
+    margin: 0 8px;
+  }
+  &.m12{
+    margin: 0 12px;
+  }
+  &.m16{
+    margin: 0 16px;
+  }
+  &.m20{
+    margin: 0 20px;
+  }
+
+  &.height-auto{
+    height: auto;
+  }
+
+  &.height-full{
+    height: 100%;
+  }
+}
+
+.el-divider__text{
+  background-color: transparent;
+}
+

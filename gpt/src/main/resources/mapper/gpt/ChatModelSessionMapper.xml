@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ChatModelSessionMapper">
+    <resultMap type="com.ruoyi.gpt.model.vo.chat_model_session.ChatModelSessionPageVO"
+               id="chatModelSessionPageVOResult">
+        <id property="id" column="id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="sessionTitle" column="session_title"/>
+        <result property="modelName" column="model_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.chat_model_session.ChatModelSessionInfoVO"
+               id="chatModelSessionInfoVOResult">
+        <id property="id" column="id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="sessionTitle" column="session_title"/>
+        <result property="modelName" column="model_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="pageList"
+            parameterType="com.ruoyi.gpt.model.dto.chat_model_session.ChatModelSessionInfoQryDto"
+            resultMap="chatModelSessionPageVOResult">
+        select id,
+               session_id,
+               session_title,
+               model_name,
+               user_id
+        from chat_model_session
+        where del_flag = '0'
+    </select>
+
+    <insert id="add" parameterType="ChatModelSessionEntity">
+        insert into chat_model_session
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="sessionId != null">session_id,</if>
+            <if test="sessionTitle != null">session_title,</if>
+            <if test="modelName != null">model_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="sessionTitle != null">#{sessionTitle},</if>
+            <if test="modelName != null">#{modelName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="ChatModelSessionEntity">
+        update chat_model_session
+        <set>
+            <if test="id != null">id = #{id},</if>
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="sessionTitle != null">session_title = #{sessionTitle},</if>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="remark != null">remark = #{remark}</if>
+            <if test="delFlag != null">del_flag = #{delFlag}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        update chat_model_session
+        set del_flag = '2'
+        where session_id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="long" resultMap="chatModelSessionInfoVOResult">
+        select id,
+               session_id,
+               session_title,
+               model_name
+        from chat_model_session
+        where id = #{id}
+        and  del_flag = '0'
+    </select>
+    <select id="getModelTopSession" resultType="com.ruoyi.gpt.model.vo.chat_model_session.ModelTopSessionVo">
+        select update_time   as updateTime,
+               session_id    as sessionId,
+               session_title as sessionTitle
+        from chat_model_session
+        <where>
+            del_flag = '0'
+            <if test="modelName != null and modelName != ''">and model_name = #{modelName}</if>
+            <if test="sessionTitle != null and sessionTitle != ''">and session_title like concat('%', #{sessionTitle}, '%')</if>
+            <if test="userId != null and userId != ''">and user_id = #{userId}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectChatModelSessionBySessionId"
+            resultType="com.ruoyi.gpt.model.vo.chat_model_session.ChatModelSessionInfoVO">
+        select id,
+               session_id,
+               session_title,
+               model_name
+        from chat_model_session
+        where session_id = #{sessionId}
+        and del_flag = '0'
+    </select>
+
+</mapper>

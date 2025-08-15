@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ChatgptQARecordMapper">
+
+    <resultMap type="ChatgptQARecord" id="ChatgptQARecordResult">
+        <result property="id" column="id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="question" column="question"/>
+        <result property="answer" column="answer"/>
+        <result property="tokenUsage" column="token_usage"/>
+        <result property="model" column="model"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+        <result property="userId" column="user_id"/>
+        <result property="isAccuracy" column="is_accuracy"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="manageId" column="manage_id"/>
+        <result property="manageTitle" column="manage_title"/>
+        <result property="isError" column="is_error"/>
+        <result property="reasoningContent" column="reasoning_content"/>
+        <result property="linkAndTitle" column="link_and_title"/>
+        <result property="completionTokens" column="completion_tokens"/>
+    </resultMap>
+
+    <sql id="selectChatgptQARecordVo">
+        select id,
+               dept_id,
+               question,
+               answer,
+               token_usage,
+               model,
+               create_time,
+               create_by,
+               update_time,
+               update_by,
+               remark,
+               user_id,
+               is_accuracy,
+               reasoning_content,
+               link_and_title
+        from chatgpt_q_a_record
+    </sql>
+
+    <select id="selectChatgptQARecordList" parameterType="ChatgptQARecord" resultMap="ChatgptQARecordResult">
+        select chat.id, chat.dept_id, chat.question, chat.answer, chat.token_usage, chat.model, chat.create_time,
+        chat.create_by, chat.update_time,
+        chat.update_by, chat.remark,chat.user_id, chat.is_accuracy, chat.session_id,
+        chat.manage_id,chat.manage_title,chat.is_error from chatgpt_q_a_record chat
+        <where>
+            <if test="deptId != null  and deptId != ''">and chat.dept_id = #{deptId}</if>
+            <if test="question != null  and question != ''">and chat.question like concat('%', #{question}, '%')</if>
+            <if test="answer != null  and answer != ''">and chat.answer like concat('%', #{answer}, '%')</if>
+            <if test="startTime != null ">and chat.create_time &gt;= CONCAT(#{startTime},' 00:00:00')</if>
+            <if test="endTime != null ">and chat.create_time &lt;= CONCAT(#{endTime},' 00:00:00')</if>
+            <if test="manageTitle != null and manageTitle != ''">and chat.manage_title like concat('%',  #{manageTitle}, '%')</if>
+            ${params.dataScope}
+        </where>
+        order by chat.create_time desc
+    </select>
+
+    <select id="selectChatgptQARecordById" parameterType="Long" resultMap="ChatgptQARecordResult">
+        <include refid="selectChatgptQARecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectChatgptQARecordByModelTokenConsumptionOverview" parameterType="ModelTokenConsumptionOverview"
+            resultMap="ChatgptQARecordResult">
+        select chat.id,
+               chat.dept_id,
+               chat.question,
+               chat.answer,
+               chat.token_usage,
+               chat.model,
+               chat.create_time,
+               chat.create_by,
+               chat.update_time,
+               chat.update_by,
+               chat.remark,
+               chat.user_id,
+               chat.is_accuracy
+        from chatgpt_q_a_record chat
+        <where>
+            <if test="lastGenerateBillTime != null">and date_format(chat.create_time,'%Y-%m-%d %H:%i:%s') &gt;= #{lastGenerateBillTime}</if>
+            <if test="deptId != null and deptId != ''">and chat.dept_id = #{deptId}</if>
+            <if test="userId != null and userId != ''">and chat.user_id = #{userId}</if>
+        </where>
+    </select>
+
+    <select id="selectChatgptQARecordSceneSessionHistpry"  resultMap="ChatgptQARecordResult">
+        select
+        chat.id,
+        chat.dept_id,
+        chat.question,
+        chat.answer,
+        chat.token_usage,
+        chat.model,
+        chat.create_time,
+        chat.create_by,
+        su.nick_name,
+        chat.update_time,
+        sd.dept_name,
+        chat.update_by, chat.remark,chat.user_id, chat.is_accuracy,
+        chat.manage_id,chat.manage_title,chat.is_error
+        from chatgpt_q_a_record chat
+        left join sys_dept sd on sd.dept_id = chat.dept_id
+        left join sys_user su on su.user_id = chat.user_id
+        <where>
+            <if test="sessionId != null ">and chat.session_id = #{sessionId}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        order by chat.create_time desc
+
+    </select>
+    <select id="getQARecordBySessionId"
+            resultType="com.ruoyi.gpt.model.vo.chat_model_session.SessionHistoryVo">
+        select id, question, answer, model,is_accuracy as isAccuracy,link_and_title as linkAndTitle,reasoning_content as reasoningContent, completion_tokens as completionTokens
+        from chatgpt_q_a_record
+        where session_id = #{sessionId}
+        order by create_time asc
+    </select>
+
+    <insert id="insertChatgptQARecord" parameterType="ChatgptQARecord" useGeneratedKeys="true" keyProperty="id">
+        insert into chatgpt_q_a_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="question != null">question,</if>
+            <if test="answer != null">answer,</if>
+            <if test="tokenUsage != null">token_usage,</if>
+            <if test="model != null">model,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="isAccuracy != null">is_accuracy,</if>
+            <if test="sessionId != null">session_id,</if>
+            <if test="reasoningContent != null">reasoning_content,</if>
+            <if test="linkAndTitle != null">link_and_title,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="question != null">#{question},</if>
+            <if test="answer != null">#{answer},</if>
+            <if test="tokenUsage != null">#{tokenUsage},</if>
+            <if test="model != null">#{model},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="isAccuracy != null">#{isAccuracy},</if>
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="reasoningContent != null">#{reasoningContent},</if>
+            <if test="linkAndTitle != null">#{linkAndTitle},</if>
+            SYSDATE(),
+        </trim>
+    </insert>
+
+    <update id="updateChatgptQARecord" parameterType="ChatgptQARecord">
+        update chatgpt_q_a_record
+            set answer = #{answer},
+            token_usage=#{tokenUsage},
+            completion_tokens=#{completionTokens}
+        where id = #{id}
+    </update>
+    <update id="updateChatgptQARecordDetail">
+        update chatgpt_q_a_record
+            set
+            reasoning_content=#{reasoningContent},
+            link_and_title=#{linkAndTitle}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatgptQARecordById" parameterType="Long">
+        delete
+        from chatgpt_q_a_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteChatgptQARecordByIds" parameterType="String">
+        delete from chatgpt_q_a_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertError" parameterType="ThirdPartyError"  >
+        insert into third_party_error
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="errorDetail != null">error_detail,</if>
+            <if test="deptId != null">dept_id,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="errorDetail != null">#{errorDetail},</if>
+            <if test="deptId != null">#{deptId},</if>
+            SYSDATE()
+        </trim>
+    </insert>
+</mapper>

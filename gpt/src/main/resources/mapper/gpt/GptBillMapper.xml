@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.GptBillMapper">
+
+    <resultMap type="GptBill" id="GptBillResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="amountOfBill"    column="amount_of_bill"    />
+        <result property="billingStatus"    column="billing_status"    />
+        <result property="amountOfBillDetail"    column="amount_of_bill_detail"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.GptBillVo" id="GptBillVoResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="amountOfBill"    column="amount_of_bill"    />
+        <result property="billingStatus"    column="billing_status"    />
+        <result property="amountOfBillDetail"    column="amount_of_bill_detail"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectGptBillVo">
+        select gb.id,
+               gb.user_id,
+               gb.dept_id,
+               gb.amount_of_bill,
+               gb.billing_status,
+               gb.amount_of_bill_detail,
+               gb.create_time,
+               gb.create_by,
+               gb.update_time,
+               gb.update_by,
+               gb.remark
+        from gpt_bill as gb
+    </sql>
+
+    <select id="selectGptBillList" parameterType="com.ruoyi.gpt.model.dto.GPTBillDto" resultMap="GptBillVoResult">
+        select gb.id,
+        gb.user_id,
+        gb.dept_id,
+        gb.amount_of_bill,
+        gb.billing_status,
+        gb.amount_of_bill_detail,
+        gb.create_time,
+        gb.create_by,
+        gb.update_time,
+        gb.update_by,
+        gb.remark,
+        su.user_name,
+        sd.dept_name
+        from gpt_bill as gb
+        inner join sys_user as su on gb.user_id = su.user_id
+        inner join sys_dept as sd on gb.dept_id = sd.dept_id
+        <where>
+            <if test="userId != null "> and gb.user_id = #{userId}</if>
+            <if test="deptId != null "> and gb.dept_id = #{deptId}</if>
+            <if test="deptName != null "> and sd.dept_name like concat('%', #{deptName},'%')</if>
+            <if test="userName != null "> and su.user_name like concat('%', #{userName}, '%')</if>
+            <if test="billingStatus != null  and billingStatus != ''"> and gb.billing_status = #{billingStatus}</if>
+            <if test="startTime != null "> and date_format(gb.create_time, '%Y-%m-%d %H:%i:%s') &gt;= #{startTime}</if>
+            <if test="endTime != null "> and date_format(gb.create_time, '%Y-%m-%d %H:%i:%s') &lt;= #{endTime}</if>
+            ${params.dataScope}
+        </where>
+        order by gb.create_time desc
+    </select>
+
+    <select id="selectGptBillById" parameterType="Long" resultMap="GptBillResult">
+        <include refid="selectGptBillVo"/>
+        where gb.id = #{id}
+    </select>
+
+    <insert id="insertGptBill" parameterType="GptBill">
+        insert into gpt_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="amountOfBill != null">amount_of_bill,</if>
+            <if test="billingStatus != null and billingStatus != ''">billing_status,</if>
+            <if test="amountOfBillDetail != null">amount_of_bill_detail,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="amountOfBill != null">#{amountOfBill},</if>
+            <if test="billingStatus != null and billingStatus != ''">#{billingStatus},</if>
+            <if test="amountOfBillDetail != null">#{amountOfBillDetail},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGptBill" parameterType="GptBill">
+        update gpt_bill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="amountOfBill != null">amount_of_bill = #{amountOfBill},</if>
+            <if test="billingStatus != null and billingStatus != ''">billing_status = #{billingStatus},</if>
+            <if test="amountOfBillDetail != null">amount_of_bill_detail = #{amountOfBillDetail},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGptBillById" parameterType="Long">
+        delete from gpt_bill where id = #{id}
+    </delete>
+
+    <delete id="deleteGptBillByIds" parameterType="String">
+        delete from gpt_bill where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

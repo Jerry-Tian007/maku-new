@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ChatgptSummaryMapper">
+    
+    <resultMap type="ChatgptSummary" id="ChatgptSummaryResult">
+        <result property="id"    column="id"    />
+        <result property="identityId"    column="identity_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="summary"    column="summary"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="businessName"    column="business_name"    />
+        <result property="history"    column="history"    />
+    </resultMap>
+
+    <sql id="selectChatgptSummaryVo">
+        select id, identity_id, dept_id, summary, create_time, create_by, remark, business_name,history from chatgpt_summary
+    </sql>
+
+    <select id="selectChatgptSummaryList" parameterType="ChatgptSummary" resultMap="ChatgptSummaryResult">
+        <include refid="selectChatgptSummaryVo"/>
+        <where>  
+            <if test="identityId != null "> and identity_id = #{identityId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="summary != null  and summary != ''"> and summary = #{summary}</if>
+            <if test="businessName != null  and businessName != ''"> and business_name like concat('%', #{businessName}, '%')</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectUser24HourChatHistoryList" parameterType="ChatgptSummary" resultMap="ChatgptSummaryResult">
+        <include refid="selectChatgptSummaryVo"/>
+        <where>
+            <if test="identityId != null ">and identity_id = #{identityId}</if>
+            and create_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        </where>
+        order by create_time desc
+    </select>
+
+
+    
+    <select id="selectChatgptSummaryById" parameterType="Long" resultMap="ChatgptSummaryResult">
+        <include refid="selectChatgptSummaryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChatgptSummary" parameterType="ChatgptSummary">
+        insert into chatgpt_summary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="identityId != null">identity_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="summary != null">summary,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="businessName != null">business_name,</if>
+            <if test="history != null">history,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="identityId != null">#{identityId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="summary != null">#{summary},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="businessName != null">#{businessName},</if>
+            <if test="history != null">#{history},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChatgptSummary" parameterType="ChatgptSummary">
+        update chatgpt_summary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="identityId != null">identity_id = #{identityId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="summary != null">summary = #{summary},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="businessName != null">business_name = #{businessName},</if>
+            <if test="history != null">history = #{history},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatgptSummaryById" parameterType="Long">
+        delete from chatgpt_summary where id = #{id}
+    </delete>
+
+    <delete id="deleteChatgptSummaryByIds" parameterType="String">
+        delete from chatgpt_summary where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectChatgptSummaryByIdentityId" resultType="ChatgptSummary">
+        <include refid="selectChatgptSummaryVo"/>
+        where identity_id = #{identityId}
+    </select>
+</mapper>

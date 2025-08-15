@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbManagerMapper">
+    <resultMap id="KbManagerResultMap" type="com.ruoyi.gpt.model.domain.KbManager">
+        <result column="id" property="id"/>
+        <result column="kb_name" property="kbName"/>
+        <result column="kb_description" property="kbDescription"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertKbManager" parameterType="com.ruoyi.gpt.model.domain.KbManager">
+        insert into kb_manager (id,
+                                kb_name,
+                                kb_description,
+                                create_by,
+                                create_time,
+                                kb_status)
+        values (#{kbManager.id},
+                #{kbManager.kbName},
+                #{kbManager.kbDescription},
+                #{kbManager.createBy},
+                #{kbManager.createTime},
+                #{kbManager.kbStatus})
+    </insert>
+    <delete id="removeBath">
+        delete from kb_manager
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectInfoById" resultMap="KbManagerResultMap">
+        select id,
+               kb_name,
+               kb_description,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from kb_manager
+        where id = #{id}
+          and kb_status = 1
+    </select>
+
+    <select id="checkByKbName" resultType="com.ruoyi.gpt.model.vo.kb_manager.KbManagerInfoVo">
+        select id,
+               kb_name        as kbName,
+               kb_description as kbManager,
+               create_by      as createBy,
+               create_time    as createTime,
+               update_by      as updateBy,
+               update_time    as updateTime
+        from kb_manager
+        where kb_name = #{kbName}
+          and kb_status = 1
+    </select>
+
+    <update id="delete">
+        update kb_manager
+        set kb_status   = 0,
+            update_by   = #{kbManager.updateBy},
+            update_time = #{kbManager.updateTime}
+        where id = #{kbManager.id}
+          and kb_status = 1
+    </update>
+
+    <select id="list"
+            parameterType="com.ruoyi.gpt.model.dto.kb_manager.KbManagerPageDto"
+            resultType="com.ruoyi.gpt.model.vo.kb_manager.KbManagerPageVo">
+        select
+        kb_manager.id,
+        kb_manager.kb_name as kbName,
+        kb_manager.kb_description as kbDescription,
+        kb_manager.create_by as createBy,
+        kb_manager.create_time as createTime,
+        (select COUNT(*) from kb_file_manager_rel where kb_manager.id = kb_file_manager_rel.kb_id )  as fileNum
+        from kb_manager
+        left join kb_authorization on kb_manager.id = kb_authorization.kb_id
+--         left join kb_file_manager_rel on  kb_manager.id = kb_file_manager_rel.kb_id
+        <where>
+            kb_status = 1
+            and (
+            <if test="userName == null or userName == ''">
+                1 = 1
+            </if>
+            <if test="userName != null and userName != ''">
+                kb_manager.create_by = #{userName}
+            </if>
+            <if test="roleIds != null and roleIds.length > 0">
+                or kb_authorization.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            )
+            <if test="kbManagerPageDto.kbName != null and kbManagerPageDto.kbName != ''">
+                and kb_name like concat('%', #{kbManagerPageDto.kbName}, '%')
+            </if>
+        </where>
+        group by kb_manager.id
+    </select>
+
+    <update id="updateKbManager" parameterType="com.ruoyi.gpt.model.domain.KbManager">
+        update kb_manager
+        set kb_name        = #{kbManager.kbName},
+            kb_description = #{kbManager.kbDescription},
+            update_by      = #{kbManager.updateBy},
+            update_time    = #{kbManager.updateTime}
+        where id = #{kbManager.id}
+          and kb_status = 1
+    </update>
+
+    <select id="selectKbManagerListByIds" resultMap="KbManagerResultMap">
+        select id,
+               kb_name,
+               kb_description,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from kb_manager
+        where kb_status = 1
+          and id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

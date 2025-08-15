@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.PromptManageMapper">
+    
+    <resultMap type="PromptManage" id="PromptManageResult">
+        <result property="id"    column="id"    />
+        <result property="model"    column="model"    />
+        <result property="group"    column="group"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="isPublish"    column="is_publish"    />
+        <result property="isSelect"    column="is_select"    />
+        <result property="orderPublish"    column="order_publish"    />
+        <result property="orderSelect"    column="order_select"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="introduction"    column="introduction"    />
+        <result property="prologue"    column="prologue"    />
+        <result property="presetProblem"    column="preset_problem"    />
+        <result property="icon"    column="icon"    />
+    </resultMap>
+
+    <sql id="selectPromptManageVo">
+        select id, model, `group`, title, content, is_publish, is_select, order_publish, order_select, create_by, create_time,update_time,update_by,remark,introduction,prologue,preset_problem,icon from prompt_manage
+    </sql>
+
+    <select id="selectPromptManageList" parameterType="PromptManage" resultMap="PromptManageResult">
+        <include refid="selectPromptManageVo"/>
+        <where>  
+            <if test="model != null  and model != ''"> and model like concat('%', #{model}, '%')</if>
+            <if test="group != null  and group != ''"> and `group` like concat('%', #{group}, '%')</if>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and content like concat('%', #{content}, '%') </if>
+            <if test="isPublish != null "> and is_publish = #{isPublish}</if>
+            <if test="isSelect != null "> and is_select = #{isSelect}</if>
+            <if test="orderPublish != null "> and order_publish = #{orderPublish}</if>
+            <if test="orderSelect != null "> and order_select = #{orderSelect}</if>
+            <if test="introduction != null "> and introduction = #{introduction}</if>
+            <if test="prologue != null "> and prologue = #{prologue}</if>
+            <if test="createBy != null "> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="startTime != null ">and create_time &gt;= CONCAT(#{startTime},' 00:00:00')</if>
+            <if test="endTime != null ">and create_time &lt;= CONCAT(#{endTime},' 00:00:00')</if>
+            and del_flag = 0
+        </where>
+    </select>
+    
+    <select id="selectPromptManageById" parameterType="Long" resultMap="PromptManageResult">
+        <include refid="selectPromptManageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPromptManage" parameterType="PromptManage">
+        insert into prompt_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="model != null">model,</if>
+            <if test="group != null">`group`,</if>
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="isPublish != null">is_publish,</if>
+            <if test="isSelect != null">is_select,</if>
+            <if test="orderPublish != null">order_publish,</if>
+            <if test="orderSelect != null">order_select,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="prologue != null">prologue,</if>
+            <if test="presetProblem != null">preset_problem,</if>
+            <if test="icon != null">icon,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="model != null">#{model},</if>
+            <if test="group != null">#{group},</if>
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="isPublish != null">#{isPublish},</if>
+            <if test="isSelect != null">#{isSelect},</if>
+            <if test="orderPublish != null">#{orderPublish},</if>
+            <if test="orderSelect != null">#{orderSelect},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="prologue != null">#{prologue},</if>
+            <if test="presetProblem != null">#{presetProblem},</if>
+            <if test="icon != null">#{icon},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePromptManage" parameterType="PromptManage">
+        update prompt_manage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="model != null">model = #{model},</if>
+            <if test="group != null">`group` = #{group},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="isPublish != null">is_publish = #{isPublish},</if>
+            <if test="isSelect != null">is_select = #{isSelect},</if>
+            <if test="orderPublish != null">order_publish = #{orderPublish},</if>
+            <if test="orderSelect != null">order_select = #{orderSelect},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="prologue != null">prologue = #{prologue},</if>
+            <if test="presetProblem != null">preset_problem = #{presetProblem},</if>
+            <if test="icon != null">icon = #{icon},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="publishPromptManage" parameterType="com.ruoyi.gpt.model.dto.prompt_manage.PromptManagePublishDto">
+        update prompt_manage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isPublish != null">is_publish = #{isPublish},</if>
+            <if test="orderPublish != null">order_publish = #{orderPublish},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="selectPromptManage" parameterType="com.ruoyi.gpt.model.dto.prompt_manage.PromptManageSelectDto">
+        update prompt_manage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isSelect != null">is_select = #{isSelect},</if>
+            <if test="orderSelect != null">order_select = #{orderSelect},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deletePromptManageById" parameterType="Long">
+        delete from prompt_manage where id = #{id}
+    </delete>
+
+    <delete id="deletePromptManageByIds" parameterType="String">
+<!--        delete from prompt_manage where id in -->
+<!--        <foreach item="id" collection="array" open="(" separator="," close=")">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+        update prompt_manage
+        SET del_flag = 2
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

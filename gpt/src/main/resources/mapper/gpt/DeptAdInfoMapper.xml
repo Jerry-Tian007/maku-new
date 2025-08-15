@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.DeptAdInfoMapper">
+    
+    <resultMap type="DeptAdInfo" id="DeptAdInfoResult">
+        <result property="id"    column="id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="adUrl"    column="ad_url"    />
+        <result property="adAdminAccount"    column="ad_admin_account"    />
+        <result property="adAdminSecret"    column="ad_admin_secret"    />
+        <result property="adSearchBase"    column="ad_search_base"    />
+        <result property="adSearchFilter"    column="ad_search_filter"    />
+        <result property="remark"    column="remark"    />
+        <result property="adUsernameSuffix"    column="ad_username_suffix"    />
+        <result property="roleIds"    column="role_ids"    />
+    </resultMap>
+
+    <sql id="selectDeptAdInfoVo">
+        select id, dept_id, ad_url, ad_admin_account, ad_admin_secret, ad_search_base, ad_search_filter, remark, ad_username_suffix,role_ids from dept_ad_info
+    </sql>
+
+    <select id="selectDeptAdInfoList" parameterType="DeptAdInfo" resultMap="DeptAdInfoResult">
+        <include refid="selectDeptAdInfoVo"/>
+        <where>  
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="adUrl != null  and adUrl != ''"> and ad_url = #{adUrl}</if>
+            <if test="adAdminAccount != null  and adAdminAccount != ''"> and ad_admin_account = #{adAdminAccount}</if>
+            <if test="adAdminSecret != null  and adAdminSecret != ''"> and ad_admin_secret = #{adAdminSecret}</if>
+            <if test="adSearchBase != null  and adSearchBase != ''"> and ad_search_base = #{adSearchBase}</if>
+            <if test="adSearchFilter != null  and adSearchFilter != ''"> and ad_search_filter = #{adSearchFilter}</if>
+            <if test="adUsernameSuffix != null  and adUsernameSuffix != ''"> and ad_username_suffix = #{adUsernameSuffix}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeptAdInfoById" parameterType="Long" resultMap="DeptAdInfoResult">
+        <include refid="selectDeptAdInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDeptAdInfo" parameterType="DeptAdInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into dept_ad_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="adUrl != null">ad_url,</if>
+            <if test="adAdminAccount != null">ad_admin_account,</if>
+            <if test="adAdminSecret != null">ad_admin_secret,</if>
+            <if test="adSearchBase != null">ad_search_base,</if>
+            <if test="adSearchFilter != null">ad_search_filter,</if>
+            <if test="remark != null">remark,</if>
+            <if test="adUsernameSuffix != null">ad_username_suffix,</if>
+            <if test="roleIds != null">role_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="adUrl != null">#{adUrl},</if>
+            <if test="adAdminAccount != null">#{adAdminAccount},</if>
+            <if test="adAdminSecret != null">#{adAdminSecret},</if>
+            <if test="adSearchBase != null">#{adSearchBase},</if>
+            <if test="adSearchFilter != null">#{adSearchFilter},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="adUsernameSuffix != null">#{adUsernameSuffix},</if>
+            <if test="roleIds != null">#{roleIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeptAdInfo" parameterType="DeptAdInfo">
+        update dept_ad_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="adUrl != null">ad_url = #{adUrl},</if>
+            <if test="adAdminAccount != null">ad_admin_account = #{adAdminAccount},</if>
+            <if test="adAdminSecret != null">ad_admin_secret = #{adAdminSecret},</if>
+            <if test="adSearchBase != null">ad_search_base = #{adSearchBase},</if>
+            <if test="adSearchFilter != null">ad_search_filter = #{adSearchFilter},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="adUsernameSuffix != null">ad_username_suffix = #{adUsernameSuffix},</if>
+            <if test="roleIds != null">role_ids = #{roleIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDeptAdInfoById" parameterType="Long">
+        delete from dept_ad_info where id = #{id}
+    </delete>
+
+    <delete id="deleteDeptAdInfoByIds" parameterType="String">
+        delete from dept_ad_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectDeptAdInfoByAdUsernameSuffix" resultMap="DeptAdInfoResult" >
+        <include refid="selectDeptAdInfoVo"></include>
+        where ad_username_suffix = #{suffix}
+    </select>
+</mapper>

@@ -1,0 +1,56 @@
+.el-select .el-input.is-focus .el-input__inner{
+  border-color: transparent;
+
+  &:hover{
+    border-color: #5072CC;
+  }
+
+  &:focus{
+    border-color: #5072CC;
+  }
+}
+.el-select:hover .el-input__inner{
+  border-color: #5072CC;
+}
+
+.el-select .el-input.is-disabled .el-input__inner:hover{
+  border-color: transparent;
+}
+
+.color-select{
+  .el-select-dropdown__list{
+    padding: 6px;
+  }
+
+  .el-select-dropdown__item{
+    border-radius: 4px;
+
+    &.selected{
+      background: #DEE7F8;
+      color: #254F91;
+      font-weight: 400;
+    }
+  }
+
+}
+
+.always > .el-select .el-input .el-input__inner{
+  border-color: #b0c0ed;
+
+  .el-input__icon{
+    color: #455c84;
+  }
+
+  &:hover {
+    border-color: #5072CC;
+  }
+
+  &:focus {
+    border-color: #5072CC;
+  }
+
+}
+
+.readonly{
+
+}

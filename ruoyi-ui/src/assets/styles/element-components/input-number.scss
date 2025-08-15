@@ -1,0 +1,51 @@
+.main.el-input-number{
+
+  .el-input-number__decrease{
+    top: 4px;
+    left: 4px;
+  }
+
+  .el-input-number__increase{
+    top: 4px;
+    right: 4px;
+  }
+
+}
+
+.main{
+  .el-input-number__increase, .el-input-number__decrease {
+    background: linear-gradient(270deg, #63A2D2 0%, #4466DC 100%);
+    border-radius: 4px;
+    color: #FFF;
+
+    &:hover {
+      color: #f2f5f8;
+    }
+  }
+
+}
+
+
+.main.el-input-number--medium {
+  .el-input-number__increase, .el-input-number__decrease {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+  }
+}
+
+.main.el-input-number--small {
+  .el-input-number__increase, .el-input-number__decrease {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+  }
+}
+
+.main.el-input-number--mini {
+  .el-input-number__increase, .el-input-number__decrease {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+  }
+}

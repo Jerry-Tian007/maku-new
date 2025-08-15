@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbQARecordMapper">
+
+    <resultMap type="KbQARecord" id="KbQARecordResult">
+        <result property="id" column="id"/>
+        <result property="question" column="question"/>
+        <result property="answer" column="answer"/>
+        <result property="reasoningContent" column="reasoning_content"/>
+        <result property="response" column="response"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="isAccuracy" column="is_accuracy"/>
+        <result property="isSolve" column="is_solve"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="chatTitle" column="chat_title"/>
+        <result property="questionVector" column="question_vector"/>
+        <result property="tokenUsage" column="token_usage"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="remark" column="ramark"/>
+        <result property="kbName" column="kb_name"/>
+        <result property="fileName" column="file_name"/>
+        <result property="modelType" column="model_type"/>
+        <result property="modelTypeId" column="model_type_id"/>
+        <result property="chunkSearch" column="chunk_search"/>
+        <result property="kbId" column="kb_id"/>
+        <result property="completionTokens" column="completion_tokens"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.dto.kb_q_a_record.KbQARecordDto" id="KbQARecordDtoResult">
+        <result property="id" column="id"/>
+        <result property="question" column="question"/>
+        <result property="answer" column="answer"/>
+        <result property="reasoningContent" column="reasoning_content"/>
+        <result property="response" column="response"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="isAccuracy" column="is_accuracy"/>
+        <result property="isSolve" column="is_solve"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="chatTitle" column="chat_title"/>
+        <result property="questionVector" column="question_vector"/>
+        <result property="tokenUsage" column="token_usage"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="remark" column="ramark"/>
+        <result property="kbName" column="kb_name"/>
+        <result property="fileName" column="file_name"/>
+        <result property="modelType" column="model_type"/>
+        <result property="modelTypeId" column="model_type_id"/>
+        <result property="chunkSearch" column="chunk_search"/>
+        <result property="kbId" column="kb_id"/>
+        <result property="completionTokens" column="completion_tokens"/>
+        <result property="rewrittenQuery" column="rewritten_query"/>
+        <result property="timeEstimation" column="time_estimation"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.kb_q_a_record.KbQARecordVo" id="KbQARecordVoResult">
+        <result property="sessionId" column="session_id"/>
+        <result property="answer" column="answer"/>
+        <result property="question" column="question"/>
+    </resultMap>
+
+    <sql id="selectKbQARecordVo">
+        select kb.id,
+               kb.question,
+               kb.answer,
+               kb.reasoning_content,
+               kb.model_type,
+               kb.model_type_id,
+               kb.response,
+               kb.dept_id,
+               kb.user_id,
+               kb.is_accuracy,
+               kb.is_solve,
+               kb.session_id,
+               kb.chat_title,
+               kb.token_usage,
+               kb.create_time,
+               kb.create_by,
+               kb.ramark
+        from kb_q_a_record kb
+                 INNER JOIN sys_user su ON su.user_id = kb.user_id
+    </sql>
+
+    <select id="selectKbQARecordList" parameterType="com.ruoyi.gpt.model.dto.kb_q_a_record.KbQARecordDto"
+            resultMap="KbQARecordDtoResult">
+        select kb.id,
+        kb.question,
+        kb.answer,
+        kb.response,
+        kb.dept_id,
+        kb.user_id,
+        kb.is_accuracy,
+        kb.is_solve,
+        kb.session_id,
+        kb.chat_title,
+        kb.token_usage,
+        kb.model_type,
+        kb.create_time,
+        kb.create_by,
+        kb.ramark,
+        kb.chunk_search,
+        kb.kb_id,
+        kb.rewritten_query,
+        kb.time_estimation
+        from kb_q_a_record kb
+        INNER JOIN sys_user su ON su.user_id = kb.user_id
+        <where>
+            <if test="question != null  and question != ''">and kb.question like CONCAT('%', #{question}, '%')</if>
+            <if test="isSolve != null  and isSolve != ''">and kb.is_solve = #{isSolve}</if>
+            <if test="isAccuracy != null  and isAccuracy != ''">and kb.is_accuracy = #{isAccuracy}</if>
+            <if test="answer != null  and answer != ''">and kb.answer like CONCAT('%', #{answer}, '%')</if>
+            <if test="response != null  and response != ''">and kb.response = #{response}</if>
+            <if test="deptId != null ">and kb.dept_id = #{deptId}</if>
+            <if test="userId != null ">and kb.user_id = #{userId}</if>
+            <if test="remark != null  and remark != ''">and kb.ramark = #{remark}</if>
+            <if test="createBy != null and createBy != ''">and kb.create_by like CONCAT('%', #{createBy}, '%')</if>
+            <if test="createByAccount != null and createByAccount != ''">and kb.create_by = #{createByAccount}</if>
+            <if test="createTime != null and createTime != ''">and kb.create_time = #{createTime}</if>
+            <if test="startTime!= null">and kb.create_time <![CDATA[ >= ]]> #{startTime,jdbcType=TIMESTAMP}</if>
+            <if test="endTime!= null">and kb.create_time <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}</if>
+        </where>
+        order by kb.create_time desc
+    </select>
+
+    <select id="selectKbQASessionRecordList" parameterType="KbQARecord" resultMap="KbQARecordResult">
+        SELECT
+        r.*
+        FROM
+        kb_q_a_record r
+        RIGHT JOIN
+        ( SELECT session_id
+        FROM kb_q_a_record
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="remark != null  and remark != ''">and ramark = #{remark}</if>
+        </where>
+        AND create_time >= DATE_SUB( NOW(), INTERVAL 24 HOUR )
+        order by create_time desc
+        LIMIT 1
+        ) t
+        ON r.session_id = t.session_id
+    </select>
+
+    <select id="selectKbQARecordById" parameterType="Long" resultMap="KbQARecordDtoResult">
+        <include refid="selectKbQARecordVo"/>
+        where kb.id = #{id}
+    </select>
+
+    <select id="countKbQARecordState" resultType="com.ruoyi.gpt.model.dto.kb_q_a_record.KbQARecordStateDto">
+        SELECT
+        COUNT(CASE WHEN is_accuracy = 'yes' THEN 1 END) AS yes_count,
+        COUNT(CASE WHEN is_accuracy = 'no' THEN 1 END) AS no_count,
+        COUNT(CASE WHEN is_accuracy IS NULL THEN 1 END) AS null_count,
+        COUNT(CASE WHEN is_solve = 'unsolved' THEN 1 END) AS unsolved_count,
+        COUNT(CASE WHEN is_solve = 'solved' THEN 1 END) AS solved_count
+        FROM kb_q_a_record
+        <where>
+            <if test="startTime!= null">and create_time <![CDATA[ >= ]]> #{startTime,jdbcType=TIMESTAMP}</if>
+            <if test="endTime!= null">and create_time <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}</if>
+        </where>
+    </select>
+
+    <select id="selectKbQARecordBySessionId" resultMap="KbQARecordDtoResult">
+        SELECT kb.id,
+        kb.question,
+        kb.answer,
+        kb.session_id,
+        kb.user_id,
+        kb.inverter,
+        kb.power,
+        kb.is_accuracy,
+        kb.chat_title,
+        kb.region_id,
+        sre.region,
+        kb.role_id,
+        sr.role_name as role,
+        kb.create_time
+        from kb_q_a_record kb
+        INNER JOIN sys_user su ON su.user_id = kb.user_id
+        INNER JOIN sys_role sr ON sr.role_id = kb.role_id
+        INNER JOIN sys_region sre ON sre.region_id = kb.region_id
+        <where>
+            session_id = #{sessionId}
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectKbQARecordByUserId" resultMap="KbQARecordDtoResult">
+        SELECT kb.id,
+        kb.question,
+        kb.answer,
+        kb.session_id,
+        kb.chat_title,
+        kb.inverter,
+        kb.power,
+        sre.region,
+        sr.role_name as role
+        from kb_q_a_record kb
+        INNER JOIN sys_user su ON su.user_id = kb.user_id
+        INNER JOIN sys_role sr ON sr.role_id = kb.role_id
+        INNER JOIN sys_region sre ON sre.region_id = kb.region_id
+        <where>
+            kb.user_id = #{userId}
+        </where>
+        order by kb.create_time desc
+    </select>
+    <!--    &#45;&#45;         后面要改成createdTime************-->
+
+    <select id="selectSessionIdsByUserId" resultMap="KbQARecordResult">
+        SELECT kb.session_id,
+               MAX(kb.create_time)
+        FROM kb_q_a_record kb
+        WHERE user_id = #{userId}
+          AND create_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        GROUP BY session_id
+        ORDER BY MAX(create_time) desc
+    </select>
+
+
+    <select id="selectSessionIdsByUserIdWithOut24" resultMap="KbQARecordDtoResult">
+        SELECT kb.session_id
+        from kb_q_a_record kb
+                 INNER JOIN sys_user su ON su.user_id = kb.user_id
+                 INNER JOIN sys_role sr ON sr.role_id = kb.role_id
+                 INNER JOIN sys_region sre ON sre.region_id = kb.region_id
+        WHERE kb.user_id = #{userId}
+        GROUP BY kb.session_id
+    </select>
+
+    <select id="selectChatTitlesByUserId" resultMap="KbQARecordResult">
+        SELECT kb.chat_title, kb.create_time
+        FROM kb_q_a_record kb
+                 INNER JOIN (SELECT session_id, MAX(create_time) AS max_create_time
+                             FROM kb_q_a_record
+                             WHERE user_id = #{userId}
+                               AND create_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                             GROUP BY session_id) subquery
+                            ON kb.session_id = subquery.session_id AND kb.create_time = subquery.max_create_time
+        WHERE kb.user_id = #{userId}
+        ORDER BY kb.create_time DESC;
+    </select>
+
+    <select id="selectKbQARecordByRegionsAndRoles" resultType="java.lang.Long">
+        SELECT
+        kb.id
+        FROM
+        kb_q_a_record kb
+        WHERE
+        kb.region_id IN
+        <foreach item="regionId" collection="regionIds" open="(" separator="," close=")">
+            #{regionId}
+        </foreach>
+        AND
+        kb.role_id IN
+        <foreach item="roleId" collection="roleIds" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <select id="getHistoryBySessionId" resultMap="KbQARecordResult">
+        select *
+        from kb_q_a_record
+        where session_id = #{sessionId}
+        order by create_time
+    </select>
+
+    <insert id="insertKbQARecord" parameterType="KbQARecord" useGeneratedKeys="true" keyProperty="id">
+        insert into kb_q_a_record(id,
+                                  question,
+                                  dept_id,
+                                  user_id,
+                                  session_id,
+                                  chat_title,
+                                  create_time,
+                                  create_by,
+                                  model_type,
+                                  model_type_id,
+                                  kb_id)
+        values (#{id},
+                #{question},
+                #{deptId},
+                #{userId},
+                #{sessionId},
+                #{chatTitle},
+                #{createTime},
+                #{createBy},
+                #{modelType},
+                #{modelTypeId},
+                #{kbId})
+    </insert>
+
+
+    <update id="updateKbQARecord" parameterType="KbQARecord">
+        update kb_q_a_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="question != null">question = #{question},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="response != null">response = #{response},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="remark != null">ramark = #{remark},</if>
+            <if test="isAccuracy != null">is_accuracy=#{isAccuracy},</if>
+            <if test="isSolve != null">is_solve=#{isSolve},</if>
+            <if test="tokenUsage != null">token_usage=#{tokenUsage},</if>
+            <if test="sessionId != null">session_id=#{sessionId},</if>
+            <if test="chatTitle != null">chat_title=#{chatTitle},</if>
+            <if test="regionId != null">region_id=#{regionId},</if>
+            <if test="roleId != null">role_id=#{roleId},</if>
+            <if test="questionVector != null">question_vector=#{questionVector},</if>
+            <if test="chunkSearch != null and chunkSearch != ''">=chunk_search = #{chunkSearch},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateAccuracyOrNot">
+        update kb_q_a_record kb
+        set kb.is_accuracy = #{isAccuracy}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKbQARecordById" parameterType="Long">
+        delete
+        from kb_q_a_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteKbQARecordByIds" parameterType="String">
+        delete from kb_q_a_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateKbQAAnswer" parameterType="com.ruoyi.gpt.model.dto.kb_q_a_record.KbQARecordDto">
+        update kb_q_a_record
+        set answer            = #{answer},
+            response          = #{response},
+            reasoning_content = #{reasoningContent},
+            question_vector   = #{questionVector},
+            token_usage       = #{tokenUsage},
+            chunk_search      = #{chunkSearch},
+            completion_tokens = #{completionTokens},
+            rewritten_query   = #{rewrittenQuery},
+            time_estimation   = #{timeEstimation}
+        where id = #{id}
+    </update>
+</mapper>

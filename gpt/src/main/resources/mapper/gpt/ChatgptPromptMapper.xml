@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ChatgptPromptMapper">
+    
+    <resultMap type="ChatgptPrompt" id="ChatgptPromptResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="tags"    column="tags"    />
+        <result property="body"    column="body"    />
+        <result property="rule"    column="rule"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectChatgptPromptVo">
+        select id, title, tags, body, rule, create_time, create_by, update_time, update_by, remark from chatgpt_prompt
+    </sql>
+
+    <select id="selectChatgptPromptList" parameterType="ChatgptPrompt" resultMap="ChatgptPromptResult">
+        <include refid="selectChatgptPromptVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="tags != null  and tags != ''"> and tags = #{tags}</if>
+            <if test="body != null  and body != ''"> and body = #{body}</if>
+            <if test="rule != null  and rule != ''"> and rule = #{rule}</if>
+        </where>
+    </select>
+    
+    <select id="selectChatgptPromptById" parameterType="Long" resultMap="ChatgptPromptResult">
+        <include refid="selectChatgptPromptVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChatgptPrompt" parameterType="ChatgptPrompt" useGeneratedKeys="true" keyProperty="id">
+        insert into chatgpt_prompt
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="tags != null">tags,</if>
+            <if test="body != null">body,</if>
+            <if test="rule != null">rule,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="tags != null">#{tags},</if>
+            <if test="body != null">#{body},</if>
+            <if test="rule != null">#{rule},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChatgptPrompt" parameterType="ChatgptPrompt">
+        update chatgpt_prompt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="tags != null">tags = #{tags},</if>
+            <if test="body != null">body = #{body},</if>
+            <if test="rule != null">rule = #{rule},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatgptPromptById" parameterType="Long">
+        delete from chatgpt_prompt where id = #{id}
+    </delete>
+
+    <delete id="deleteChatgptPromptByIds" parameterType="String">
+        delete from chatgpt_prompt where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

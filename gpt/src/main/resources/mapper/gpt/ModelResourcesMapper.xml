@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ModelResourcesMapper">
+
+    <resultMap type="ModelResources" id="ModelResourcesResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="tpm" column="tpm"/>
+        <result property="parameter" column="parameter"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleteBy" column="delete_by"/>
+        <result property="deleteTime" column="delete_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="scene" column="scene"/>
+    </resultMap>
+
+    <sql id="selectModelResourcesVo">
+        select id,
+               name,
+               type,
+               tpm,
+               parameter,
+               remark,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               delete_by,
+               delete_time,
+               del_flag,
+               scene
+        from model_resources
+    </sql>
+
+    <select id="selectModelResourcesList" parameterType="ModelResources" resultMap="ModelResourcesResult">
+        <include refid="selectModelResourcesVo"/>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''">and `type` = #{type}</if>
+            <if test="scene != null  and scene != ''">and scene = #{scene}</if>
+            <if test="tpm != null ">and tpm = #{tpm}</if>
+            <if test="parameter != null  and parameter != ''">and `parameter` = #{parameter}</if>
+            <if test="deleteBy != null  and deleteBy != ''">and delete_by = #{deleteBy}</if>
+            <if test="deleteTime != null ">and delete_time = #{deleteTime}</if>
+        </where>
+    </select>
+
+    <select id="selectModelResourcesById" parameterType="Long" resultMap="ModelResourcesResult">
+        <include refid="selectModelResourcesVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectModelResourcesListForPlatform"
+            resultType="com.ruoyi.gpt.model.vo.model_resources.ModelResourcesListVo">
+        select id, name, type, tpm, parameter,scene, remark, create_by as createBy, create_time as createTime, update_by
+        as updateBy, update_time as updateTime
+        from model_resources
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''">and type = #{type}</if>
+            <if test="startTime != null ">and create_time >= #{startTime}</if>
+            <if test="endTime != null ">and create_time &lt;= #{endTime}</if>
+            and del_flag = '0'
+        </where>
+        order by create_time
+    </select>
+
+    <select id="verificationModelResources"
+            parameterType="com.ruoyi.gpt.model.dto.model_resources.ModelResourcesInsertDto"
+            resultType="com.ruoyi.gpt.model.domain.ModelResources">
+        select id, name, type, tpm, parameter,scene, remark, create_by as createBy, create_time as createTime, update_by
+        as updateBy, update_time as updateTime
+        from model_resources
+        <where>
+            <if test="name != null">name =#{name}</if>
+            <if test="type != null">and `type` = #{type}</if>
+            <if test="parameter != null">and `parameter` = #{parameter}</if>
+            <if test="scene != null">and scene = #{scene}</if>
+            and del_flag = '0'
+        </where>
+    </select>
+    <select id="getAuthorizeModelResourcesList"
+            resultType="com.ruoyi.gpt.model.vo.model_resources.ModelResourcesAuthorizeUseVo">
+        select distinct `type`,scene,max_token as maxToken from model_resources
+        <where>
+            del_flag = '0'
+            and `type` in
+            <foreach item="type" collection="sets" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getAllModelResourcesList"
+            resultType="com.ruoyi.gpt.model.vo.model_resources.ModelResourcesAuthorizeUseVo">
+        select distinct `type`,scene,max_token as maxToken from model_resources
+        <where>
+            del_flag = '0'
+        </where>
+    </select>
+
+    <select id="selectModelResourcesIdList" resultType="Long"
+            parameterType="com.ruoyi.gpt.model.dto.model_resources.ModelResourcesInsertDto">
+        select id from model_resources
+        <where>
+            <if test="type != null">and `type` = #{type}</if>
+            <if test="scene != null">and scene = #{scene}</if>
+            and del_flag = '0'
+        </where>
+    </select>
+
+    <insert id="insertModelResources" parameterType="ModelResources" useGeneratedKeys="true" keyProperty="id">
+        insert into model_resources(id,
+                                    name,
+                                    type,
+                                    tpm,
+                                    parameter,
+                                    create_by,
+                                    create_time,
+                                    scene)
+        values (#{id},
+                #{name},
+                #{type},
+                #{tpm},
+                #{parameter},
+                #{createBy},
+                #{createTime},
+                #{scene})
+    </insert>
+
+    <update id="updateModelResources" parameterType="ModelResources">
+        update model_resources
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="tpm != null">tpm = #{tpm},</if>
+            <if test="parameter != null">parameter = #{parameter},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="scene != null">scene = #{scene},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteModelResources" parameterType="ModelResources">
+        update model_resources
+        set delete_by=#{deleteBy},
+            delete_time=#{deleteTime},
+            del_flag=#{delFlag}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteModelResourcesByIds" parameterType="String">
+        update
+        model_resources
+        set del_flag = '2'
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

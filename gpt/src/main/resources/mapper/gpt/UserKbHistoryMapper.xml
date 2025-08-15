@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.UserKbHistoryMapper">
+
+    <resultMap type="UserKbHistory" id="UserKbHistoryResult">
+        <result property="id" column="id"/>
+        <result property="sessionMark" column="session_mark"/>
+        <result property="sessionName" column="session_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <update id="batchDeleteUserKbHistoryById">
+        update user_kb_history
+        set status = 0
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="selectUserKbHistoryPageList" resultType="com.ruoyi.gpt.model.vo.user_kb_history.UserKbHistoryPageVo">
+        select id,
+               session_mark as sessionMark,
+               session_name as sessionName,
+               create_time  as createTime,
+               create_by    as createBy
+        from user_kb_history
+        where create_by = #{username} and status = 1
+        order by create_time desc
+    </select>
+
+    <delete id="deleteUserKbHistoryById" parameterType="Long">
+        update user_kb_history
+        set status = 0
+        where id = #{id}
+    </delete>
+
+    <insert id="insertUserKbHistory" parameterType="UserKbHistory">
+        insert into user_kb_history(id,
+                                    session_mark,
+                                    session_name,
+                                    create_time,
+                                    create_by,
+                                    status)
+        values (#{userKbHistory.id},
+                #{userKbHistory.sessionMark},
+                #{userKbHistory.sessionName},
+                #{userKbHistory.createTime},
+                #{userKbHistory.createBy},
+                #{userKbHistory.status})
+    </insert>
+
+    <select id="selectBySessionMark" resultMap="UserKbHistoryResult">
+        select *
+        from user_kb_history
+        where session_mark = #{sessionMark} and status = 1
+    </select>
+
+    <select id="selectById" resultMap="UserKbHistoryResult">
+        select *
+        from user_kb_history
+        where id = #{id} and status = 1
+    </select>
+</mapper>

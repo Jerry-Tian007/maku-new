@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.PromptModelManageMapper">
+
+    <resultMap type="PromptModelManage" id="PromptModelManageResult">
+        <result property="id" column="id"/>
+        <result property="model" column="model"/>
+        <result property="manageId" column="manage_id"/>
+        <result property="modelOrder" column="model_order"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectPromptModelManageVo">
+        select id,
+               model,
+               manage_id,
+               model_order,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from prompt_model_manage
+    </sql>
+
+    <select id="selectPromptModelManageList" parameterType="PromptModelManage" resultMap="PromptModelManageResult">
+        <include refid="selectPromptModelManageVo"/>
+        <where>
+            <if test="model != null  and model != ''">and model = #{model}</if>
+            <if test="manageId != null ">and manage_id = #{manageId}</if>
+            <if test="modelOrder != null ">and model_order = #{modelOrder}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+        </where>
+    </select>
+
+    <select id="selectPromptModelManageById" parameterType="Long" resultMap="PromptModelManageResult">
+        <include refid="selectPromptModelManageVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPromptManageByModel" resultType="com.ruoyi.gpt.model.vo.prompt_model_manage.PromptModelManageListVo">
+        select pmm.id
+             , pm.model
+             , pm.`group`
+             , pm.title
+             , pm.introduction
+             , pmm.model_order as modelOrder
+             , pmm.create_by   as createBy
+             , pmm.create_time as createTime
+             , pmm.update_by   as updateBy
+             , pmm.update_time as updateTime
+             , pmm.remark
+             , pm.icon
+             , pm.id as manageId
+        from prompt_manage pm
+                 inner join prompt_model_manage pmm on pm.id = pmm.manage_id and pm.del_flag = '0'
+        where pm.del_flag = '0' and pmm.model = #{model}
+        order by pmm.model_order ASC
+    </select>
+    <select id="selectPromptUnManageByModel" resultType="com.ruoyi.gpt.model.vo.prompt_model_manage.PromptModelUnManageListVo">
+        SELECT pm.id as manageId,
+               pm.model,
+               pm.`group`,
+               pm.title,
+               pm.introduction
+        FROM prompt_manage pm
+        LEFT JOIN prompt_model_manage pmm ON pm.id = pmm.manage_id
+        WHERE
+            pmm.manage_id IS NULL
+          and pm.del_flag = '0'
+          AND pm.model = #{model}
+    </select>
+
+
+    <insert id="insertPromptModelManage" parameterType="PromptModelManage">
+        insert into prompt_model_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="model != null">model,</if>
+            <if test="manageId != null">manage_id,</if>
+            <if test="modelOrder != null">model_order,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="model != null">#{model},</if>
+            <if test="manageId != null">#{manageId},</if>
+            <if test="modelOrder != null">#{modelOrder},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePromptModelManage" parameterType="PromptModelManage">
+        update prompt_model_manage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="model != null">model = #{model},</if>
+            <if test="manageId != null">manage_id = #{manageId},</if>
+            <if test="modelOrder != null">model_order = #{modelOrder},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePromptModelManageById" parameterType="Long">
+        delete
+        from prompt_model_manage
+        where id = #{id}
+    </delete>
+
+    <delete id="deletePromptModelManageByIds" parameterType="String">
+        delete from prompt_model_manage where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

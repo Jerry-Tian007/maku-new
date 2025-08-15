@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="98.3332921%" id="linearGradient-1">
+            <stop stop-color="#89CCAF" offset="0%"></stop>
+            <stop stop-color="#1C95D1" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="NY-Zodiac" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="切图" transform="translate(-670.000000, -30.000000)">
+            <g id="编组-12" transform="translate(670.000000, 30.000000)">
+                <rect id="矩形备份-4" x="0" y="0" width="20" height="20"></rect>
+                <path d="M14.5,10.495 C14.5,10.8429394 14.2179394,11.125 13.87,11.125 L10.63,11.125 C9.92997908,11.125 9.36249999,10.5575209 9.36249999,9.85749999 L9.36249999,5.64250001 C9.36249999,5.29248954 9.64623954,5.00875 9.99625,5.00875 C10.3462605,5.00875 10.63,5.29248954 10.63,5.64250001 L10.63,9.865 L13.885,9.865 C14.2270677,9.87314676 14.500097,10.1528353 14.5,10.495 L14.5,10.495 Z M10,1 C5.02943725,1 1,5.02943725 1,10 C1,14.9705627 5.02943725,19 10,19 C14.9705627,19 19,14.9705627 19,10 C19,7.61305159 18.0517884,5.32386638 16.363961,3.63603897 C14.6761336,1.94821156 12.3869484,1 10,1 Z" id="形状" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

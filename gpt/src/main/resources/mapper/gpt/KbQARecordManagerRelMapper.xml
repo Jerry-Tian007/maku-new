@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbQARecordManagerRelMapper">
+    <insert id="insertKbQARecordManagerRel" parameterType="com.ruoyi.gpt.model.domain.KbQARecordManagerRel">
+        insert into kb_q_a_record_manager_rel (id, kb_q_a_record_id, kb_manager_id, create_time, create_by)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},
+            #{item.kbQARecordId},
+            #{item.kbManagerId},
+            #{item.createTime},
+            #{item.createBy})
+        </foreach>
+    </insert>
+</mapper>

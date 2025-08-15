@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter x="-26.7%" y="-26.7%" width="153.3%" height="153.3%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.166665991 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="NY-Zodiac" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="切图" transform="translate(-460.000000, -190.000000)">
+            <g id="编组-9" filter="url(#filter-1)" transform="translate(466.000000, 196.000000)">
+                <rect id="矩形" fill="#FFFFFF" x="0" y="0" width="30" height="30" rx="4"></rect>
+                <path d="M22.2,21.4 L7.8,21.4 C7.3581722,21.4 7,21.7581722 7,22.2 C7,22.6418278 7.3581722,23 7.8,23 L22.2,23 C22.6418278,23 23,22.6418278 23,22.2 C23,21.7581722 22.6418278,21.4 22.2,21.4 Z M14.432,19.624 C14.5822133,19.7754501 14.78669,19.8606387 15,19.8606387 C15.21331,19.8606387 15.4177867,19.7754501 15.568,19.624 L21.224,13.968 C21.3754501,13.8177867 21.4606387,13.61331 21.4606387,13.4 C21.4606387,13.18669 21.3754501,12.9822133 21.224,12.832 C21.0737867,12.6805499 20.86931,12.5953613 20.656,12.5953613 C20.44269,12.5953613 20.2382133,12.6805499 20.088,12.832 L15.8,17.128 L15.8,7.79999997 C15.8,7.35817218 15.4418278,7 15,7 C14.5581722,7 14.2,7.35817218 14.2,7.79999997 L14.2,17.128 L9.912,12.832 C9.76178672,12.6805499 9.55731003,12.5953613 9.344,12.5953613 C9.13068997,12.5953613 8.92621328,12.6805499 8.776,12.832 C8.62454988,12.9822133 8.53936134,13.18669 8.53936134,13.4 C8.53936134,13.61331 8.62454988,13.8177867 8.776,13.968 L14.432,19.624 Z" id="形状" fill="#516BAF" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

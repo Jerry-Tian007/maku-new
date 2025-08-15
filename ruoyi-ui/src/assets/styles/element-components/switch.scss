@@ -1,0 +1,13 @@
+.el-switch.is-checked .el-switch__core {
+  background-color: #5072CC;
+  border-color: #5072CC;
+}
+
+.el-switch__label {
+  color: #00000054;
+
+  &.is-active {
+    color: #5072CC;
+  }
+}
+

@@ -1,0 +1,20 @@
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background: linear-gradient( 270deg, #6DA7CE 0%, #4E71EB 100%);
+  color: #fff;
+}
+
+.el-pagination .el-select .el-input .el-input__inner{
+  background-color: #F3F5FB;
+
+  &:hover{
+    border-color: #b9c2da;
+  }
+
+}
+.el-select .el-input.is-focus .el-input__inner{
+  border-color: #b9c2da;
+}
+
+.color-pagination{
+  background-color: #F3F5FB;
+}

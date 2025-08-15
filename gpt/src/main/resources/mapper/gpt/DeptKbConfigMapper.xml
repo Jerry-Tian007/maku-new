@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.DeptKbConfigMapper">
+
+    <resultMap type="DeptKbConfig" id="DeptKbConfigResult">
+        <result property="id"    column="id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="openaiDocumentEmbeddingDeployment"    column="openai_document_embedding_deployment"    />
+        <result property="openaiQueryEmbeddingDeployment"    column="openai_query_embedding_deployment"    />
+        <result property="openaiSummerizationDeployment"    column="openai_summerization_deployment"    />
+        <result property="openaiApiKey"    column="openai_api_key"    />
+        <result property="openaiApiBase"    column="openai_api_base"    />
+        <result property="openaiApiType"    column="openai_api_type"    />
+        <result property="openaiApiVersion"    column="openai_api_version"    />
+        <result property="openaiChatgptDeployment"    column="openai_chatgpt_deployment"    />
+        <result property="azureBlobStorageConnectionString"    column="azure_blob_storage_connection_string"    />
+        <result property="azureBlobStorageAccountName"    column="azure_blob_storage_account_name"    />
+        <result property="azureBlobStorageContainer"    column="azure_blob_storage_container"    />
+        <result property="azureVectorStorageTableName"    column="azure_vector_storage_table_name"    />
+        <result property="azureVectorBlobStorageKey"    column="azure_vector_blob_storage_key"    />
+        <result property="azureBlobStorageContainerDirectroy"    column="azure_blob_storage_container_directroy"    />
+        <result property="azureBlobStorageAccountUrl"    column="azure_blob_storage_account_url"    />
+        <result property="azureSearchUrl"    column="azure_search_url"    />
+        <result property="azureSearchKey"    column="azure_search_key"    />
+        <result property="azureSearchDataDocsSource"    column="azure_search_data_docs_source"    />
+        <result property="azureSearchService"    column="azure_search_service"    />
+        <result property="azureSearchDocsIndex"    column="azure_search_docs_index"    />
+        <result property="azureSearchDocsSkillset"    column="azure_search_docs_skillset"    />
+        <result property="azureSearchDocsIndexer"    column="azure_search_docs_indexer"    />
+        <result property="azureCognitiveServiceKey"    column="azure_cognitive_service_key"    />
+        <result property="redisHost"    column="redis_host"    />
+        <result property="redisPassword"    column="redis_password"    />
+        <result property="redisPort"    column="redis_port"    />
+        <result property="redisDb"    column="redis_db"    />
+        <result property="kbFieldsContent"    column="kb_fields_content"    />
+        <result property="kbFieldsSourcepage"    column="kb_fields_sourcepage"    />
+        <result property="kbFieldsContentCn"    column="kb_fields_content_cn"    />
+        <result property="kbFieldsSourcepageCn"    column="kb_fields_sourcepage_cn"    />
+        <result property="functionUrl"    column="function_url"    />
+        <result property="mergedTextUrl"    column="merged_text_url"    />
+        <result property="azureSearchDataSourceExcels"    column="azure_search_data_source_excels"    />
+        <result property="azureSearchIndexExcels"    column="azure_search_index_excels"    />
+        <result property="azureSearchSkillsetExcels"    column="azure_search_skillset_excels"    />
+        <result property="azureSearchIndexerExcels"    column="azure_search_indexer_excels"    />
+        <result property="azureSearchIndex"    column="azure_search_index"    />
+        <result property="azureSearchSkillset"    column="azure_search_skillset"    />
+        <result property="azureSearchIndexer"    column="azure_search_indexer"    />
+        <result property="azureSearchDataSource"    column="azure_search_data_source"    />
+        <result property="blobStorageContainerDocsDirectroy"    column="blob_source_container_docs_directory"    />
+        <result property="blobStorageContainerExcelsDirectroy"    column="blob_source_container_excels_directory"    />
+        <result property="blobSourceContainerDirectoryExcels"    column="blob_source_container_directory_excels"    />
+        <result property="formrecognizerFunctionUrl"    column="formrecognizer_function_url"    />
+    </resultMap>
+
+    <sql id="selectDeptKbConfigVo">
+        select id, dept_id, user_id, openai_document_embedding_deployment, blob_source_container_docs_directory,blob_source_container_excels_directory,openai_query_embedding_deployment, openai_summerization_deployment, openai_api_key, openai_api_base, openai_api_type, openai_api_version, openai_chatgpt_deployment, azure_blob_storage_connection_string, azure_blob_storage_account_name, azure_blob_storage_container, azure_vector_storage_table_name, azure_vector_blob_storage_key, azure_blob_storage_container_directroy, azure_blob_storage_account_url, azure_search_url, azure_search_key, azure_search_data_docs_source, azure_search_service, azure_search_docs_index, azure_search_docs_skillset, azure_search_docs_indexer, azure_cognitive_service_key, redis_host, redis_password, redis_port, redis_db, kb_fields_content, kb_fields_sourcepage, kb_fields_content_cn, kb_fields_sourcepage_cn, function_url, merged_text_url, azure_search_data_source_excels, azure_search_index_excels, azure_search_skillset_excels, azure_search_indexer_excels, azure_search_index, azure_search_skillset, azure_search_indexer, azure_search_data_source,blob_source_container_directory_excels,formrecognizer_function_url from dept_kb_config
+    </sql>
+
+    <select id="selectDeptKbConfigList" parameterType="DeptKbConfig" resultMap="DeptKbConfigResult">
+        <include refid="selectDeptKbConfigVo"/>
+        <where>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="openaiDocumentEmbeddingDeployment != null  and openaiDocumentEmbeddingDeployment != ''"> and openai_document_embedding_deployment = #{openaiDocumentEmbeddingDeployment}</if>
+            <if test="openaiQueryEmbeddingDeployment != null  and openaiQueryEmbeddingDeployment != ''"> and openai_query_embedding_deployment = #{openaiQueryEmbeddingDeployment}</if>
+            <if test="openaiSummerizationDeployment != null  and openaiSummerizationDeployment != ''"> and openai_summerization_deployment = #{openaiSummerizationDeployment}</if>
+            <if test="openaiApiKey != null  and openaiApiKey != ''"> and openai_api_key = #{openaiApiKey}</if>
+            <if test="openaiApiBase != null  and openaiApiBase != ''"> and openai_api_base = #{openaiApiBase}</if>
+            <if test="openaiApiType != null  and openaiApiType != ''"> and openai_api_type = #{openaiApiType}</if>
+            <if test="openaiApiVersion != null  and openaiApiVersion != ''"> and openai_api_version = #{openaiApiVersion}</if>
+            <if test="openaiChatgptDeployment != null  and openaiChatgptDeployment != ''"> and openai_chatgpt_deployment = #{openaiChatgptDeployment}</if>
+            <if test="azureBlobStorageConnectionString != null  and azureBlobStorageConnectionString != ''"> and azure_blob_storage_connection_string = #{azureBlobStorageConnectionString}</if>
+            <if test="azureBlobStorageAccountName != null  and azureBlobStorageAccountName != ''"> and azure_blob_storage_account_name like concat('%', #{azureBlobStorageAccountName}, '%')</if>
+            <if test="azureBlobStorageContainer != null  and azureBlobStorageContainer != ''"> and azure_blob_storage_container = #{azureBlobStorageContainer}</if>
+            <if test="azureVectorStorageTableName != null  and azureVectorStorageTableName != ''"> and azure_vector_storage_table_name like concat('%', #{azureVectorStorageTableName}, '%')</if>
+            <if test="azureVectorBlobStorageKey != null  and azureVectorBlobStorageKey != ''"> and azure_vector_blob_storage_key = #{azureVectorBlobStorageKey}</if>
+            <if test="azureBlobStorageContainerDirectroy != null  and azureBlobStorageContainerDirectroy != ''"> and azure_blob_storage_container_directroy = #{azureBlobStorageContainerDirectroy}</if>
+            <if test="azureBlobStorageAccountUrl != null  and azureBlobStorageAccountUrl != ''"> and azure_blob_storage_account_url = #{azureBlobStorageAccountUrl}</if>
+            <if test="azureSearchUrl != null  and azureSearchUrl != ''"> and azure_search_url = #{azureSearchUrl}</if>
+            <if test="azureSearchKey != null  and azureSearchKey != ''"> and azure_search_key = #{azureSearchKey}</if>
+            <if test="azureSearchDataDocsSource != null  and azureSearchDataDocsSource != ''"> and azure_search_data_docs_source = #{azureSearchDataDocsSource}</if>
+            <if test="azureSearchService != null  and azureSearchService != ''"> and azure_search_service = #{azureSearchService}</if>
+            <if test="azureSearchDocsIndex != null  and azureSearchDocsIndex != ''"> and azure_search_docs_index = #{azureSearchDocsIndex}</if>
+            <if test="azureSearchDocsSkillset != null  and azureSearchDocsSkillset != ''"> and azure_search_docs_skillset = #{azureSearchDocsSkillset}</if>
+            <if test="azureSearchDocsIndexer != null  and azureSearchDocsIndexer != ''"> and azure_search_docs_indexer = #{azureSearchDocsIndexer}</if>
+            <if test="azureCognitiveServiceKey != null  and azureCognitiveServiceKey != ''"> and azure_cognitive_service_key = #{azureCognitiveServiceKey}</if>
+            <if test="redisHost != null  and redisHost != ''"> and redis_host = #{redisHost}</if>
+            <if test="redisPassword != null  and redisPassword != ''"> and redis_password = #{redisPassword}</if>
+            <if test="redisPort != null  and redisPort != ''"> and redis_port = #{redisPort}</if>
+            <if test="redisDb != null  and redisDb != ''"> and redis_db = #{redisDb}</if>
+            <if test="kbFieldsContent != null  and kbFieldsContent != ''"> and kb_fields_content = #{kbFieldsContent}</if>
+            <if test="kbFieldsSourcepage != null  and kbFieldsSourcepage != ''"> and kb_fields_sourcepage = #{kbFieldsSourcepage}</if>
+            <if test="kbFieldsContentCn != null  and kbFieldsContentCn != ''"> and kb_fields_content_cn = #{kbFieldsContentCn}</if>
+            <if test="kbFieldsSourcepageCn != null  and kbFieldsSourcepageCn != ''"> and kb_fields_sourcepage_cn = #{kbFieldsSourcepageCn}</if>
+            <if test="functionUrl != null  and functionUrl != ''"> and function_url = #{functionUrl}</if>
+            <if test="mergedTextUrl != null  and mergedTextUrl != ''"> and merged_text_url = #{mergedTextUrl}</if>
+            <if test="azureSearchDataSourceExcels != null  and azureSearchDataSourceExcels != ''"> and azure_search_data_source_excels = #{azureSearchDataSourceExcels}</if>
+            <if test="azureSearchIndexExcels != null  and azureSearchIndexExcels != ''"> and azure_search_index_excels = #{azureSearchIndexExcels}</if>
+            <if test="azureSearchSkillsetExcels != null  and azureSearchSkillsetExcels != ''"> and azure_search_skillset_excels = #{azureSearchSkillsetExcels}</if>
+            <if test="azureSearchIndexerExcels != null  and azureSearchIndexerExcels != ''"> and azure_search_indexer_excels = #{azureSearchIndexerExcels}</if>
+            <if test="azureSearchIndex != null  and azureSearchIndex != ''"> and azure_search_index = #{azureSearchIndex}</if>
+            <if test="azureSearchSkillset != null  and azureSearchSkillset != ''"> and azure_search_skillset = #{azureSearchSkillset}</if>
+            <if test="azureSearchIndexer != null  and azureSearchIndexer != ''"> and azure_search_indexer = #{azureSearchIndexer}</if>
+            <if test="azureSearchDataSource != null  and azureSearchDataSource != ''"> and azure_search_data_source = #{azureSearchDataSource}</if>
+        </where>
+    </select>
+
+    <select id="selectDeptKbConfigById" parameterType="Long" resultMap="DeptKbConfigResult">
+        <include refid="selectDeptKbConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDeptKbConfig" parameterType="DeptKbConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into dept_kb_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="openaiDocumentEmbeddingDeployment != null">openai_document_embedding_deployment,</if>
+            <if test="openaiQueryEmbeddingDeployment != null">openai_query_embedding_deployment,</if>
+            <if test="openaiSummerizationDeployment != null">openai_summerization_deployment,</if>
+            <if test="openaiApiKey != null">openai_api_key,</if>
+            <if test="openaiApiBase != null">openai_api_base,</if>
+            <if test="openaiApiType != null">openai_api_type,</if>
+            <if test="openaiApiVersion != null">openai_api_version,</if>
+            <if test="openaiChatgptDeployment != null">openai_chatgpt_deployment,</if>
+            <if test="azureBlobStorageConnectionString != null">azure_blob_storage_connection_string,</if>
+            <if test="azureBlobStorageAccountName != null">azure_blob_storage_account_name,</if>
+            <if test="azureBlobStorageContainer != null">azure_blob_storage_container,</if>
+            <if test="azureVectorStorageTableName != null">azure_vector_storage_table_name,</if>
+            <if test="azureVectorBlobStorageKey != null">azure_vector_blob_storage_key,</if>
+            <if test="azureBlobStorageContainerDirectroy != null">azure_blob_storage_container_directroy,</if>
+            <if test="azureBlobStorageAccountUrl != null">azure_blob_storage_account_url,</if>
+            <if test="azureSearchUrl != null">azure_search_url,</if>
+            <if test="azureSearchKey != null">azure_search_key,</if>
+            <if test="azureSearchDataDocsSource != null">azure_search_data_docs_source,</if>
+            <if test="azureSearchService != null">azure_search_service,</if>
+            <if test="azureSearchDocsIndex != null">azure_search_docs_index,</if>
+            <if test="azureSearchDocsSkillset != null">azure_search_docs_skillset,</if>
+            <if test="azureSearchDocsIndexer != null">azure_search_docs_indexer,</if>
+            <if test="azureCognitiveServiceKey != null">azure_cognitive_service_key,</if>
+            <if test="redisHost != null">redis_host,</if>
+            <if test="redisPassword != null">redis_password,</if>
+            <if test="redisPort != null">redis_port,</if>
+            <if test="redisDb != null">redis_db,</if>
+            <if test="kbFieldsContent != null">kb_fields_content,</if>
+            <if test="kbFieldsSourcepage != null">kb_fields_sourcepage,</if>
+            <if test="kbFieldsContentCn != null">kb_fields_content_cn,</if>
+            <if test="kbFieldsSourcepageCn != null">kb_fields_sourcepage_cn,</if>
+            <if test="functionUrl != null">function_url,</if>
+            <if test="mergedTextUrl != null">merged_text_url,</if>
+            <if test="azureSearchDataSourceExcels != null">azure_search_data_source_excels,</if>
+            <if test="azureSearchIndexExcels != null">azure_search_index_excels,</if>
+            <if test="azureSearchSkillsetExcels != null">azure_search_skillset_excels,</if>
+            <if test="azureSearchIndexerExcels != null">azure_search_indexer_excels,</if>
+            <if test="azureSearchIndex != null">azure_search_index,</if>
+            <if test="azureSearchSkillset != null">azure_search_skillset,</if>
+            <if test="azureSearchIndexer != null">azure_search_indexer,</if>
+            <if test="azureSearchDataSource != null">azure_search_data_source,</if>
+            <if test="formrecognizerFunctionUrl != null">formrecognizer_function_url,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="openaiDocumentEmbeddingDeployment != null">#{openaiDocumentEmbeddingDeployment},</if>
+            <if test="openaiQueryEmbeddingDeployment != null">#{openaiQueryEmbeddingDeployment},</if>
+            <if test="openaiSummerizationDeployment != null">#{openaiSummerizationDeployment},</if>
+            <if test="openaiApiKey != null">#{openaiApiKey},</if>
+            <if test="openaiApiBase != null">#{openaiApiBase},</if>
+            <if test="openaiApiType != null">#{openaiApiType},</if>
+            <if test="openaiApiVersion != null">#{openaiApiVersion},</if>
+            <if test="openaiChatgptDeployment != null">#{openaiChatgptDeployment},</if>
+            <if test="azureBlobStorageConnectionString != null">#{azureBlobStorageConnectionString},</if>
+            <if test="azureBlobStorageAccountName != null">#{azureBlobStorageAccountName},</if>
+            <if test="azureBlobStorageContainer != null">#{azureBlobStorageContainer},</if>
+            <if test="azureVectorStorageTableName != null">#{azureVectorStorageTableName},</if>
+            <if test="azureVectorBlobStorageKey != null">#{azureVectorBlobStorageKey},</if>
+            <if test="azureBlobStorageContainerDirectroy != null">#{azureBlobStorageContainerDirectroy},</if>
+            <if test="azureBlobStorageAccountUrl != null">#{azureBlobStorageAccountUrl},</if>
+            <if test="azureSearchUrl != null">#{azureSearchUrl},</if>
+            <if test="azureSearchKey != null">#{azureSearchKey},</if>
+            <if test="azureSearchDataDocsSource != null">#{azureSearchDataDocsSource},</if>
+            <if test="azureSearchService != null">#{azureSearchService},</if>
+            <if test="azureSearchDocsIndex != null">#{azureSearchDocsIndex},</if>
+            <if test="azureSearchDocsSkillset != null">#{azureSearchDocsSkillset},</if>
+            <if test="azureSearchDocsIndexer != null">#{azureSearchDocsIndexer},</if>
+            <if test="azureCognitiveServiceKey != null">#{azureCognitiveServiceKey},</if>
+            <if test="redisHost != null">#{redisHost},</if>
+            <if test="redisPassword != null">#{redisPassword},</if>
+            <if test="redisPort != null">#{redisPort},</if>
+            <if test="redisDb != null">#{redisDb},</if>
+            <if test="kbFieldsContent != null">#{kbFieldsContent},</if>
+            <if test="kbFieldsSourcepage != null">#{kbFieldsSourcepage},</if>
+            <if test="kbFieldsContentCn != null">#{kbFieldsContentCn},</if>
+            <if test="kbFieldsSourcepageCn != null">#{kbFieldsSourcepageCn},</if>
+            <if test="functionUrl != null">#{functionUrl},</if>
+            <if test="mergedTextUrl != null">#{mergedTextUrl},</if>
+            <if test="azureSearchDataSourceExcels != null">#{azureSearchDataSourceExcels},</if>
+            <if test="azureSearchIndexExcels != null">#{azureSearchIndexExcels},</if>
+            <if test="azureSearchSkillsetExcels != null">#{azureSearchSkillsetExcels},</if>
+            <if test="azureSearchIndexerExcels != null">#{azureSearchIndexerExcels},</if>
+            <if test="azureSearchIndex != null">#{azureSearchIndex},</if>
+            <if test="azureSearchSkillset != null">#{azureSearchSkillset},</if>
+            <if test="azureSearchIndexer != null">#{azureSearchIndexer},</if>
+            <if test="azureSearchDataSource != null">#{azureSearchDataSource},</if>
+            <if test="formrecognizerFunctionUrl != null">#{formrecognizerFunctionUrl},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDeptKbConfig" parameterType="DeptKbConfig">
+        update dept_kb_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="openaiDocumentEmbeddingDeployment != null">openai_document_embedding_deployment = #{openaiDocumentEmbeddingDeployment},</if>
+            <if test="openaiQueryEmbeddingDeployment != null">openai_query_embedding_deployment = #{openaiQueryEmbeddingDeployment},</if>
+            <if test="openaiSummerizationDeployment != null">openai_summerization_deployment = #{openaiSummerizationDeployment},</if>
+            <if test="openaiApiKey != null">openai_api_key = #{openaiApiKey},</if>
+            <if test="openaiApiBase != null">openai_api_base = #{openaiApiBase},</if>
+            <if test="openaiApiType != null">openai_api_type = #{openaiApiType},</if>
+            <if test="openaiApiVersion != null">openai_api_version = #{openaiApiVersion},</if>
+            <if test="openaiChatgptDeployment != null">openai_chatgpt_deployment = #{openaiChatgptDeployment},</if>
+            <if test="azureBlobStorageConnectionString != null">azure_blob_storage_connection_string = #{azureBlobStorageConnectionString},</if>
+            <if test="azureBlobStorageAccountName != null">azure_blob_storage_account_name = #{azureBlobStorageAccountName},</if>
+            <if test="azureBlobStorageContainer != null">azure_blob_storage_container = #{azureBlobStorageContainer},</if>
+            <if test="azureVectorStorageTableName != null">azure_vector_storage_table_name = #{azureVectorStorageTableName},</if>
+            <if test="azureVectorBlobStorageKey != null">azure_vector_blob_storage_key = #{azureVectorBlobStorageKey},</if>
+            <if test="azureBlobStorageContainerDirectroy != null">azure_blob_storage_container_directroy = #{azureBlobStorageContainerDirectroy},</if>
+            <if test="azureBlobStorageAccountUrl != null">azure_blob_storage_account_url = #{azureBlobStorageAccountUrl},</if>
+            <if test="azureSearchUrl != null">azure_search_url = #{azureSearchUrl},</if>
+            <if test="azureSearchKey != null">azure_search_key = #{azureSearchKey},</if>
+            <if test="azureSearchDataDocsSource != null">azure_search_data_docs_source = #{azureSearchDataDocsSource},</if>
+            <if test="azureSearchService != null">azure_search_service = #{azureSearchService},</if>
+            <if test="azureSearchDocsIndex != null">azure_search_docs_index = #{azureSearchDocsIndex},</if>
+            <if test="azureSearchDocsSkillset != null">azure_search_docs_skillset = #{azureSearchDocsSkillset},</if>
+            <if test="azureSearchDocsIndexer != null">azure_search_docs_indexer = #{azureSearchDocsIndexer},</if>
+            <if test="azureCognitiveServiceKey != null">azure_cognitive_service_key = #{azureCognitiveServiceKey},</if>
+            <if test="redisHost != null">redis_host = #{redisHost},</if>
+            <if test="redisPassword != null">redis_password = #{redisPassword},</if>
+            <if test="redisPort != null">redis_port = #{redisPort},</if>
+            <if test="redisDb != null">redis_db = #{redisDb},</if>
+            <if test="kbFieldsContent != null">kb_fields_content = #{kbFieldsContent},</if>
+            <if test="kbFieldsSourcepage != null">kb_fields_sourcepage = #{kbFieldsSourcepage},</if>
+            <if test="kbFieldsContentCn != null">kb_fields_content_cn = #{kbFieldsContentCn},</if>
+            <if test="kbFieldsSourcepageCn != null">kb_fields_sourcepage_cn = #{kbFieldsSourcepageCn},</if>
+            <if test="functionUrl != null">function_url = #{functionUrl},</if>
+            <if test="mergedTextUrl != null">merged_text_url = #{mergedTextUrl},</if>
+            <if test="azureSearchDataSourceExcels != null">azure_search_data_source_excels = #{azureSearchDataSourceExcels},</if>
+            <if test="azureSearchIndexExcels != null">azure_search_index_excels = #{azureSearchIndexExcels},</if>
+            <if test="azureSearchSkillsetExcels != null">azure_search_skillset_excels = #{azureSearchSkillsetExcels},</if>
+            <if test="azureSearchIndexerExcels != null">azure_search_indexer_excels = #{azureSearchIndexerExcels},</if>
+            <if test="azureSearchIndex != null">azure_search_index = #{azureSearchIndex},</if>
+            <if test="azureSearchSkillset != null">azure_search_skillset = #{azureSearchSkillset},</if>
+            <if test="azureSearchIndexer != null">azure_search_indexer = #{azureSearchIndexer},</if>
+            <if test="azureSearchDataSource != null">azure_search_data_source = #{azureSearchDataSource},</if>
+            <if test="formrecognizerFunctionUrl != null">formrecognizer_function_url = #{formrecognizerFunctionUrl},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDeptKbConfigById" parameterType="Long">
+        delete from dept_kb_config where id = #{id}
+    </delete>
+
+    <delete id="deleteDeptKbConfigByIds" parameterType="String">
+        delete from dept_kb_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getDeptKbConfigByDeptIdAndUserId" resultMap="DeptKbConfigResult">
+        <include refid="selectDeptKbConfigVo"></include>
+        <where>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+        </where>
+    </select>
+</mapper>

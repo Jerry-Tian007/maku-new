@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ModelResourceRoleMapper">
+    
+    <resultMap type="ModelResourceRole" id="ModelResourceRoleResult">
+        <result property="id"    column="id"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="modelResourceTemplateId"    column="model_resource_template_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectModelResourceRoleVo">
+        select id,
+               role_id,
+               model_resource_template_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from model_resource_role
+    </sql>
+
+    <select id="selectModelResourceRoleList" parameterType="ModelResourceRole" resultMap="ModelResourceRoleResult">
+        <include refid="selectModelResourceRoleVo"/>
+        <where>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="modelResourceTemplateId != null "> and model_resource_template_id = #{modelResourceTemplateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectModelResourceRoleById" parameterType="Long" resultMap="ModelResourceRoleResult">
+        <include refid="selectModelResourceRoleVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectModelResourceRoleByRoleId" parameterType="Long" resultMap="ModelResourceRoleResult">
+        <include refid="selectModelResourceRoleVo"/>
+        where role_id = #{roleId}
+    </select>
+
+    <select id="selectModelResourceRoleListForPlatform"
+            resultType="com.ruoyi.gpt.model.vo.model_resource_role.ModelResourceRoleVo">
+        SELECT
+        mrr.role_id AS roleId,
+        sr.role_name AS roleName,
+        max(mrr.create_by) AS createBy,
+        max(mrr.create_time) AS createTime
+        FROM
+        model_resource_role mrr
+        JOIN sys_role sr ON sr.role_id = mrr.role_id
+        <where>
+            <if test="roleName != null and roleName != '' ">
+                and sr.role_name like concat('%',#{roleName},'%')
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and mrr.create_by like concat('%',#{createBy},'%')
+            </if>
+        </where>
+        GROUP BY roleId, roleName
+    </select>
+    <select id="getModelResources" resultType="java.lang.String">
+        select model_resource_template_id
+        from model_resource_role mrr
+        where role_id = #{roleId}
+    </select>
+    <select id="getModelResourcesByRoleIds"
+            resultType="com.ruoyi.gpt.model.vo.model_resource_role.ModelResourceRoleVo">
+        SELECT
+        model_resource_role.role_id AS roleId,
+        model_resource_template.type AS modelResourceType
+        FROM
+        model_resource_role
+        JOIN model_resource_template ON model_resource_role.model_resource_template_id = model_resource_template.id
+        <where>
+            <if test="roleIds != null and roleIds.size > 0">
+                and model_resource_role.role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertModelResourceRole" parameterType="ModelResourceRole">
+        insert into model_resource_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="modelResourceTemplateId != null">model_resource_template_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="modelResourceTemplateId != null">#{modelResourceTemplateId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateModelResourceRole" parameterType="ModelResourceRole">
+        update model_resource_role
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="modelResourceTemplateId != null">model_resource_template_id = #{modelResourceTemplateId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteModelResourceRoleById" parameterType="Long">
+        delete from model_resource_role where id = #{id}
+    </delete>
+
+    <delete id="deleteModelResourceRoleByIds" parameterType="String">
+        delete from model_resource_role where id in 
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteModelResourceRoleByRoleId" parameterType="Long">
+        delete from model_resource_role where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteModelResourceRoleByModelType" parameterType="Long">
+        delete from model_resource_role where model_resource_template_id = #{modelResourceType}
+    </delete>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbFileManagerRelMapper">
+    <insert id="insertKbFileManagerRel" parameterType="com.ruoyi.gpt.model.domain.KbFileManagerRel">
+        insert into kb_file_manager_rel (id,
+                                         file_id,
+                                         kb_id,
+                                         create_by,
+                                         create_time)
+        VALUES
+        <foreach collection="kbFileManagerRelList" item="kbFileManagerRel" separator=",">
+            (#{kbFileManagerRel.id},
+            #{kbFileManagerRel.fileId},
+            #{kbFileManagerRel.kbId},
+            #{kbFileManagerRel.createBy},
+            #{kbFileManagerRel.createTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteKbFileManagerRelByFileId">
+        delete
+        from kb_file_manager_rel
+        where file_id = #{fileId}
+    </delete>
+
+    <delete id="deleteKbFileManagerRelByKbId">
+        delete
+        from kb_file_manager_rel
+        where kb_id = #{kbId}
+    </delete>
+
+    <delete id="deleteKbFileManagerRelByFileIds">
+        delete
+        from kb_file_manager_rel
+        where file_id in
+        <foreach collection="fileIds" open="(" separator="," close=")" item="fileId">
+            #{fileId}
+        </foreach>
+    </delete>
+
+    <select id="selectFileIdToKbNameListByFileIds" resultType="com.ruoyi.gpt.model.vo.kb_file_manager_rel.FileIdToKbNameVo">
+        select kfmr.file_id as fileId,
+        km.kb_name as kbName,
+        km.id as kbId
+        from kb_file_manager_rel kfmr
+        left join kb_manager km
+        on kfmr.kb_id = km.id
+        where km.kb_status = 1
+        and kfmr.file_id in
+        <foreach collection="fileIds" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </select>
+
+    <select id="selectFileIdToKbIdByFileIds" resultType="com.ruoyi.gpt.model.vo.kb_file_manager_rel.FileIdToKbIdVo">
+        select file_id as fileId,
+               kb_id as kbId
+        from kb_file_manager_rel
+        where file_id in
+        <foreach collection="fileIds" open="(" item="fileId" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </select>
+
+    <select id="selectFileIdToKbIdByDeletedKbId" resultType="com.ruoyi.gpt.model.vo.kb_file_manager_rel.FileIdToKbIdVo">
+        select file_id as fileId,
+               kb_id as kbId
+        from kb_file_manager_rel
+        where file_id in (select file_id
+                          from kb_file_manager_rel
+                          where kb_id = #{deletedKbId})
+    </select>
+</mapper>

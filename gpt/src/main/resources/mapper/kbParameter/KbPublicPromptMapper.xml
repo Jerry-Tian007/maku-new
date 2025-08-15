@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbPublicPromptMapper">
+    <resultMap type="com.ruoyi.gpt.model.vo.public_prompt.PublicPromptPageVO" id="publicPromptPageVOResult">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="prompt" column="prompt"/>
+        <result property="personalPromptId" column="personal_prompt_id"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.public_prompt.PublicPromptInfoVO" id="publicPromptInfoVOResult">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="prompt" column="prompt"/>
+        <result property="personalPromptId" column="personal_prompt_id"/>
+    </resultMap>
+
+    <select id="pageList"
+            parameterType="com.ruoyi.gpt.model.dto.public_prompt.PublicPromptInfoQryDto"
+            resultMap="publicPromptPageVOResult">
+        select id,
+               name,
+               prompt,
+                personal_prompt_id
+        from kb_public_prompt
+        <where>
+            <if test="name != null and name != ''">
+                and `name` like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="PublicPromptEntity">
+        insert into kb_public_prompt(id,
+        <if test="name != null">name,</if>
+        <if test="prompt != null">prompt,</if>
+        <if test="personalPromptId != null">personal_prompt_id,</if>
+        <if test="remark != null">remark,</if>
+        create_by,
+        create_time)
+        values (#{id},
+        <if test="name != null">#{name},</if>
+        <if test="prompt != null">#{prompt},</if>
+        <if test="personalPromptId != null">#{personalPromptId},</if>
+        <if test="remark != null">#{remark},</if>
+        #{createBy},
+        #{createTime})
+    </insert>
+
+    <update id="updateById" parameterType="PublicPromptEntity">
+        update kb_public_prompt
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="prompt != null">prompt = #{prompt},</if>
+            <if test="personalPromptId != null">personal_prompt_id = #{personalPromptId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete
+        from kb_public_prompt
+        where id = #{id}
+    </delete>
+    <delete id="deleteByPersonalPromptId">
+        delete
+        from kb_public_prompt
+        where personal_prompt_id = #{personalPromptId}
+    </delete>
+
+    <select id="getById" parameterType="long" resultMap="publicPromptInfoVOResult">
+        select id,
+               name,
+               prompt,
+                personal_prompt_id
+        from kb_public_prompt
+        where id = #{id}
+    </select>
+    <select id="selectByPersonalPromptId" resultType="com.ruoyi.gpt.model.domain.PublicPromptEntity">
+        select id,
+               name,
+               prompt,
+               personal_prompt_id as personalPromptId
+        from kb_public_prompt
+        where personal_prompt_id = #{personalPromptId}
+    </select>
+    <select id="selectByName" resultType="com.ruoyi.gpt.model.domain.PublicPromptEntity">
+        select id,
+               name,
+               prompt,
+               personal_prompt_id as personalPromptId
+        from kb_public_prompt
+        where name = #{name}
+    </select>
+
+    <select id="selectUserDefaultPrompt" resultMap="publicPromptPageVOResult">
+        select *
+        from kb_public_prompt
+        where remark = 'userDefault'
+        limit 1
+    </select>
+
+</mapper>

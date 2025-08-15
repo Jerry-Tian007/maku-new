@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.GraphRoleMapper">
+
+    <resultMap type="GraphRole" id="GraphRoleResult">
+        <result property="graphId" column="graph_id"/>
+        <result property="roleId" column="role_id"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.GraphRoleVo" id="GraphRoleVoResult">
+        <result property="cnName" column="cn_name"/>
+        <result property="name" column="name"/>
+        <result property="spaceId" column="space_id"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into graph_role (graph_id, role_id) values (#{graphId}, #{roleId})
+    </insert>
+
+    <delete id="deleteByGraphId" parameterType="String">
+        delete from graph_role where graph_id = #{graphId}
+    </delete>
+
+    <delete id="deleteByGraphIdAndRoleId">
+        delete from graph_role where graph_id = #{graphId} and role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteByRoleId">
+        delete from graph_role where role_id = #{roleId}
+    </delete>
+
+    <select id="graphRole" resultMap="GraphRoleVoResult">
+        select gi.space_id, gi.cn_name, gi.name
+        from graph_info gi
+                 inner join graph_role gr on gi.space_id = gr.graph_id
+        where gr.role_id = #{roleId}
+    </select>
+
+    <select id="selectGraphRoleByGraphIdAndRoleId" resultMap="GraphRoleResult">
+        select * from graph_role where graph_id = #{graphId} and role_id = #{roleId}
+    </select>
+</mapper>

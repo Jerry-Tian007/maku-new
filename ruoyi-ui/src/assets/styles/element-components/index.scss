@@ -1,0 +1,80 @@
+@import "checkbox";
+@import "input";
+@import "input-number";
+@import "select";
+@import "slider";
+@import "switch";
+@import "button";
+@import "card";
+@import "tabs";
+@import "divider";
+@import "pagination";
+@import "popover";
+@import "colors";
+@import "table";
+@import "dropdown";
+@import "upload";
+
+.el-notification {
+  align-content: center;
+}
+
+.el-dialog {
+  //background: #FFFFFF;
+  background: #F7F9FC;
+  border-radius: 4px;
+}
+
+.gray-label {
+  .el-form-item__label {
+    color: rgba(44, 44, 44, 0.7);
+  }
+}
+
+.el-form-item--small.el-form-item {
+  &.no-bottom {
+    margin-bottom: 0;
+  }
+}
+
+
+
+.dialog-title {
+  font-weight: 600;
+  font-size: 21px;
+  color: #2C2C2C;
+  line-height: 29px;
+}
+
+.bottom-border {
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(151, 151, 151, 0.14);
+}
+
+body{
+  font-family: PingFangSC, PingFang SC !important;
+}
+
+.purple.el-tag--info{
+  color: #9a94ca;
+  background: #ECE8F3;
+  border-color: #d6cee5;
+}
+
+.sidebar-logo-title{
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 400;
+  font-size: 24px;
+  color: #E3F5FF;
+  line-height: 33px;
+  text-align: left;
+  opacity: 0.85;
+
+  .sub{
+    font-size: 14px;
+    line-height: 28px;
+    letter-spacing: 5px;
+    opacity: 0.8;
+  }
+}
+

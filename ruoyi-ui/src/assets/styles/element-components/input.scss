@@ -1,0 +1,79 @@
+.el-input__inner, .el-textarea__inner {
+  border-color: transparent;
+
+  &:hover {
+    border-color: #5072CC;
+  }
+
+  &:focus {
+    border-color: #5072CC;
+  }
+
+  &.border {
+    border-color: #5072CC;
+
+    .el-input__icon{
+      color: #1B3B71;
+    }
+  }
+
+}
+
+.always > .el-input__inner, .always > .el-textarea__inner{
+  border-color: #b0c0ed;
+
+  .el-input__icon{
+    color: #455c84;
+  }
+
+  &:hover {
+    border-color: #5072CC;
+  }
+
+  &:focus {
+    border-color: #5072CC;
+  }
+
+}
+
+.no-border > .el-input__inner, .no-border > .el-textarea__inner {
+  border: none;
+  padding: 8px 16px;
+}
+
+.dark {
+  &.border{
+    .el-input__inner, .el-textarea__inner {
+      border-color: #5072CC;
+    }
+    .el-input__icon{
+      color: #1B3B71;
+    }
+  }
+
+  .el-input__inner, .el-textarea__inner {
+    background-color: #EBF0F9;
+  }
+  .el-input__icon{
+    color: #1B3B71;
+  }
+}
+
+.el-input.is-disabled .el-input__inner {
+  border-color: transparent;
+}
+
+.transparent {
+  .el-input__inner, .el-textarea__inner {
+    border-color: transparent;
+    background-color: transparent;
+  }
+
+  .el-input__icon{
+    color: #1B3B71;
+  }
+}
+
+.header-search .header-search-select .el-input__inner{
+  background: transparent;
+}

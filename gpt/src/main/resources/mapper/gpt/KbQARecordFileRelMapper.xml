@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.KbQARecordFileRelMapper">
+    <insert id="insertKbQARecordFileRel" parameterType="com.ruoyi.gpt.model.domain.KbQARecordFileRel">
+        insert into kb_q_a_record_file_rel (id,
+        kb_q_a_record_id,
+        kb_file_id,
+        kb_file_name,
+        create_time,
+        create_by)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},
+            #{item.kbQARecordId},
+            #{item.kbFileId},
+            #{item.kbFileName},
+            #{item.createTime},
+            #{item.createBy})
+        </foreach>
+    </insert>
+</mapper>

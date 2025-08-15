@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.ModelTokenConsumptionOverviewMapper">
+
+    <resultMap type="ModelTokenConsumptionOverview" id="ModelTokenConsumptionOverviewResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="totalTokenConsumption" column="total_token_consumption"/>
+        <result property="totalConsumptionAmount" column="total_consumption_amount"/>
+        <result property="currentBillTokenConsumption" column="current_bill_token_consumption"/>
+        <result property="currentBillConsumptionAmount" column="current_bill_consumption_amount"/>
+        <result property="lastGenerateBillTime" column="last_generate_bill_time"/>
+        <result property="overviewDetail" column="overview_detail"/>
+        <result property="maxConsumptionAmount" column="max_consumption_amount"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.gpt.model.vo.ModelTokenConsumptionOverviewVo" id="ModelTokenConsumptionOverviewResultVo">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="totalTokenConsumption" column="total_token_consumption"/>
+        <result property="totalConsumptionAmount" column="total_consumption_amount"/>
+        <result property="currentBillTokenConsumption" column="current_bill_token_consumption"/>
+        <result property="currentBillConsumptionAmount" column="current_bill_consumption_amount"/>
+        <result property="lastGenerateBillTime" column="last_generate_bill_time"/>
+        <result property="overviewDetail" column="overview_detail"/>
+        <result property="maxConsumptionAmount" column="max_consumption_amount"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectModelTokenConsumptionOverviewVo">
+        select mtco.id,
+               mtco.user_id,
+               mtco.dept_id,
+               mtco.total_token_consumption,
+               mtco.total_consumption_amount,
+               mtco.current_bill_token_consumption,
+               mtco.current_bill_consumption_amount,
+               mtco.last_generate_bill_time,
+               mtco.overview_detail,
+               mtco.max_consumption_amount,
+               mtco.type,
+               mtco.create_time,
+               mtco.create_by,
+               mtco.update_time,
+               mtco.update_by,
+               mtco.remark
+        from model_token_consumption_overview mtco
+    </sql>
+
+    <select id="selectModelTokenConsumptionOverviewList"
+            parameterType="com.ruoyi.gpt.model.dto.ModelTokenConsumptionOverviewDto"
+            resultMap="ModelTokenConsumptionOverviewResultVo">
+        select mtco.id,
+        mtco.user_id,
+        mtco.dept_id,
+        mtco.total_token_consumption,
+        mtco.total_consumption_amount,
+        mtco.current_bill_token_consumption,
+        mtco.current_bill_consumption_amount,
+        mtco.last_generate_bill_time,
+        mtco.overview_detail,
+        mtco.max_consumption_amount,
+        mtco.create_time,
+        mtco.type,
+        mtco.create_by,
+        mtco.update_time,
+        mtco.update_by,
+        mtco.remark,
+        sd.dept_name,
+        su.user_name
+        from model_token_consumption_overview mtco
+        INNER JOIN sys_dept sd ON mtco.dept_id = sd.dept_id
+        INNER JOIN sys_user su ON mtco.user_id = su.user_id
+        <where>
+            <if test="userId != null ">and mtco.user_id = #{userId}</if>
+            <if test="deptId != null ">and mtco.dept_id = #{deptId}</if>
+            <if test="type != null ">and mtco.type = #{type}</if>
+            <if test="deptName != null ">and sd.dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="userName != null ">and su.user_name like concat('%', #{userName}, '%')</if>
+            ${params.dataScope}
+        </where>
+        order by mtco.create_time desc
+    </select>
+
+    <select id="selectModelTokenConsumptionOverview" parameterType="ModelTokenConsumptionOverview"
+            resultMap="ModelTokenConsumptionOverviewResult">
+        <include refid="selectModelTokenConsumptionOverviewVo"/>
+        <where>
+            <if test="id != null and id != 0">and mtco.id = #{id}</if>
+            <if test="type != null ">and mtco.type = #{type}</if>
+            <if test="userId != null ">and mtco.user_id = #{userId}</if>
+            <if test="deptId != null ">and mtco.dept_id = #{deptId}</if>
+        </where>
+    </select>
+
+    <select id="selectModelTokenConsumptionOverviewById" parameterType="Long"
+            resultMap="ModelTokenConsumptionOverviewResult">
+        <include refid="selectModelTokenConsumptionOverviewVo"/>
+        where mtco.id = #{id}
+    </select>
+
+    <select id="selectModelTokenConsumptionOverviewByDeptId" parameterType="Long"
+            resultMap="ModelTokenConsumptionOverviewResult">
+        <include refid="selectModelTokenConsumptionOverviewVo"/>
+        where mtco.dept_id = #{deptId}
+    </select>
+
+    <!-- 查询部门的概览 -->
+    <select id="selectDeptOverviewByDeptId" resultMap="ModelTokenConsumptionOverviewResult">
+        <include refid="selectModelTokenConsumptionOverviewVo"/>
+        <where>
+            <if test="deptId != null ">and mtco.dept_id = #{deptId}</if>
+            and mtco.type = 'dept'
+        </where>
+    </select>
+
+    <resultMap id="SysUserVo" type="SysUser">
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+    <select id="selectGptSysUserList" resultMap="SysUserVo">
+        select su.user_id, su.dept_id
+        from sys_user as su
+        where su.del_flag = 0
+          and su.user_name != 'admin'
+    </select>
+
+    <insert id="insertModelTokenConsumptionOverview" parameterType="ModelTokenConsumptionOverview">
+        insert into model_token_consumption_overview
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="totalTokenConsumption != null">total_token_consumption,</if>
+            <if test="totalConsumptionAmount != null">total_consumption_amount,</if>
+            <if test="currentBillTokenConsumption != null">current_bill_token_consumption,</if>
+            <if test="currentBillConsumptionAmount != null">current_bill_consumption_amount,</if>
+            <if test="lastGenerateBillTime != null">last_generate_bill_time,</if>
+            <if test="overviewDetail != null">overview_detail,</if>
+            <if test="type != null">type,</if>
+            <if test="maxConsumptionAmount != null">max_consumption_amount,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="totalTokenConsumption != null">#{totalTokenConsumption},</if>
+            <if test="totalConsumptionAmount != null">#{totalConsumptionAmount},</if>
+            <if test="currentBillTokenConsumption != null">#{currentBillTokenConsumption},</if>
+            <if test="currentBillConsumptionAmount != null">#{currentBillConsumptionAmount},</if>
+            <if test="lastGenerateBillTime != null">#{lastGenerateBillTime},</if>
+            <if test="overviewDetail != null">#{overviewDetail},</if>
+            <if test="type != null">#{type},</if>
+            <if test="maxConsumptionAmount != null">#{maxConsumptionAmount},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateModelTokenConsumptionOverview" parameterType="ModelTokenConsumptionOverview">
+        update model_token_consumption_overview
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="totalTokenConsumption != null">total_token_consumption = #{totalTokenConsumption},</if>
+            <if test="totalConsumptionAmount != null">total_consumption_amount = #{totalConsumptionAmount},</if>
+            <if test="currentBillTokenConsumption != null">current_bill_token_consumption =
+                #{currentBillTokenConsumption},
+            </if>
+            <if test="currentBillConsumptionAmount != null">current_bill_consumption_amount =
+                #{currentBillConsumptionAmount},
+            </if>
+            <if test="lastGenerateBillTime != null">last_generate_bill_time = #{lastGenerateBillTime},</if>
+            <if test="overviewDetail != null">overview_detail = #{overviewDetail},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="maxConsumptionAmount != null">max_consumption_amount = #{maxConsumptionAmount},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteModelTokenConsumptionOverviewById" parameterType="Long">
+        delete
+        from model_token_consumption_overview
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteModelTokenConsumptionOverviewByIds" parameterType="String">
+        delete from model_token_consumption_overview where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.gpt.mapper.GraphInfoMapper">
+
+    <resultMap type="GraphInfo" id="GraphInfoResult">
+        <result property="spaceId" column="space_id"/>
+        <result property="cnName" column="cn_name"/>
+        <result property="des" column="des"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="syncTime" column="sync_time"/>
+    </resultMap>
+
+    <sql id="selectGraphInfoVo">
+        select space_id, cn_name, des, name, create_time, sync_time
+        from graph_info
+    </sql>
+
+    <select id="selectGraphInfoList" parameterType="GraphInfo" resultMap="GraphInfoResult">
+        <include refid="selectGraphInfoVo"/>
+        <where>
+            <if test="spaceId != null  and spaceId != ''">and space_id = #{spaceId}</if>
+            <if test="cnName != null  and cnName != ''">and cn_name like concat('%', #{cnName}, '%')</if>
+            <if test="des != null  and des != ''">and des like concat('%', #{des}, '%') </if>
+            <if test="name != null  and name != ''">and `name` like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectGraphInfoBySpaceId" parameterType="String" resultMap="GraphInfoResult">
+        <include refid="selectGraphInfoVo"/>
+        where space_id = #{spaceId}
+    </select>
+
+    <select id="selectAllSpaceIds" resultType="String">
+        select space_id from graph_info
+    </select>
+
+    <select id="selectGraphInfoByRoleId" resultMap="GraphInfoResult">
+        select gi.*
+        from graph_info gi
+                 inner join graph_role gr on gi.space_id = gr.graph_id
+        where gr.role_id = #{roleId}
+    </select>
+
+    <insert id="insertGraphInfo" parameterType="GraphInfo">
+        insert into graph_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="spaceId != null">space_id,</if>
+            <if test="cnName != null">cn_name,</if>
+            <if test="des != null">des,</if>
+            <if test="name != null">`name`,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="syncTime != null">sync_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="spaceId != null">#{spaceId},</if>
+            <if test="cnName != null">#{cnName},</if>
+            <if test="des != null">#{des},</if>
+            <if test="name != null">#{name},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="syncTime != null">#{syncTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGraphInfo" parameterType="GraphInfo">
+        update graph_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cnName != null">cn_name = #{cnName},</if>
+            <if test="des != null">des = #{des},</if>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="syncTime != null">sync_time = #{syncTime},</if>
+        </trim>
+        where space_id = #{spaceId}
+    </update>
+
+    <delete id="deleteGraphInfoBySpaceId">
+        delete from graph_info where space_id = #{spaceId}
+    </delete>
+</mapper>
