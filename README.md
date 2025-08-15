@@ -8,10 +8,26 @@ To make it easy for you to get started with GitLab, here's a list of recommended
 
 Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-## Add your files
+## deploy Steps:
+- cd ruoyi-admin/
+- run : mvn clean pacakge
+- cd ruoyi-ui
+- run: package.json
+  - "build:prod": "vue-cli-service build",
+  - "build:stage": "vue-cli-service build --mode staging",
+-- zip dist dir.
+- ssh Test or Prod service. xxx.xx.xx.33/xx.x.xx.4.139
+- copy mk.jar and dist.zip to service.
+- make sure nginx worked.  (Ui auto deploying by nginx ).
+- In test env
+  -  unzip dist.zip to /usr/local/ui/zodiac
+  -  cp mk.jar /home/ubuntu/jar
+  -  run systemctl restart mk_java.service 
+- In Prod Env:
+  -  unzip dist.zip to /home/ubuntu/jar
+  -  cp mk.jar /home/ubuntu/jar
+  -  run systemctl restart mk_java.service 
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
 
 ## Collaborate with your team
